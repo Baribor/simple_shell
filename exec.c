@@ -28,7 +28,7 @@ char *handle_path(char *args)
 		_strcat(cmd_path, "/");
 		_strcat(cmd_path, args);
 
-		if (check_exec(cmd_path))
+		if (access(cmd_path, F_OK) == 0)
 			return (cmd_path);
 		free(cmd_path);
 		dir = strtok(NULL, ":");
@@ -71,30 +71,33 @@ void execute(char **args)
 /**
  * exec_command - Handles external commands
  * @args: Arguments passed
- * Return: void
+ * Return: The error code of the running process
  */
-void exec_command(char **args)
+int exec_command(char **args)
 {
+	char *cmd_path = args[0];
+	int fileStat;
 
+	if (!(cmd_path[0] == '/' || cmd_path[0] == '.'))
+	{
+		cmd_path = handle_path(args[0]);
+		if (!cmd_path)
+		{
+			errno = 127;
+			return (127);
+		}
+		args[0] = cmd_path;
+	}
+
+	fileStat = check_exec(cmd_path);
 	/* If a full path to an executable is entered */
-	if (check_exec(args[0]) == 1)
+	if (fileStat == 1)
 	{
 		execute(args);
+		return (0);
 	}
 	else
 	{
-		/* Try to get the full path using the system PATH env variable */
-		char *cmd_path = handle_path(args[0]);
-
-		if (cmd_path != NULL)
-		{
-			args[0] = cmd_path;
-			execute(args);
-		}
-		else
-		{
-			perror("Error: Executable file not found.\n");
-			exit(EXIT_FAILURE);
-		}
+		return (fileStat);
 	}
 }

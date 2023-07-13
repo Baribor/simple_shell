@@ -42,5 +42,19 @@ int is_builtin(shell_info *data)
  */
 int check_exec(char *args)
 {
-	return (access(args, X_OK) == 0 && access(args, F_OK) == 0);
+	struct stat fileStatus;
+
+	/* If path exists */
+	if (stat(args, &fileStatus) == 0)
+	{
+		/* If path is not a directory and is an executable */
+		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
+		{
+			errno = 126;
+			return (126);
+		}
+		return (1);
+	}
+	errno = 127;
+	return (127);
 }

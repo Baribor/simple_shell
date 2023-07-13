@@ -54,9 +54,8 @@ char **tokenize_input(char *line);
 char *_getenv(const char *name);
 char *handle_path(char *args);
 int check_exec(char *args);
-void exec_command(char **args);
-void print_error(void);
-int is_eof(void);
+int exec_command(char **args);
+int is_eof(int fd);
 void handle_eof(void);
 void shell_loop(char *prompt, shell_info *data);
 int is_builtin(shell_info *data);
@@ -65,5 +64,12 @@ void init_data(shell_info *data);
 /* Builtin command handlers */
 int print_environment(shell_info *data);
 int builtin_exit(shell_info *data);
+
+/* Output */
+void print_error(int code, shell_info *data);
+
+/* Converters */
+void number_to_string(char *buf, int num);
+void reverse_string(char *str);
 
 #endif
