@@ -1,8 +1,14 @@
 #include "shell.h"
 
+/**
+ * tokenize_input - Splits a string into tokens
+ * @line: The string to split
+ * Return: An array of string tokens
+ */
 char **tokenize_input(char *line)
 {
-	char **tokens = malloc(MAX_TOKENS * sizeof(char*)); /* allocates memory for array of strings */
+	/* allocates memory for array of strings */
+	char **tokens = malloc(MAX_TOKENS * sizeof(char *));
 	char *token;
 	int count = 0, bufsize = MAX_TOKENS;
 
@@ -20,7 +26,7 @@ char **tokenize_input(char *line)
 		if (count >= bufsize)
 		{
 			bufsize += MAX_TOKENS;
-			tokens = realloc(tokens, bufsize * sizeof(char*));
+			tokens = realloc(tokens, bufsize * sizeof(char *));
 			if (!tokens)
 			{
 				perror("Reallocation error");

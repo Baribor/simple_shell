@@ -1,12 +1,10 @@
 #include "shell.h"
-char *_getenv(const char *name);
 
-int check_exec(char *args)
-{
-	if (access(args, X_OK) == 0 && access(args, F_OK) == 0)
-		return (1);
-	return (0);
-}
+/**
+ * handle_path - Finds an executable in the system PATH
+ * @args: command name
+ * Return: Full path of the executable
+ */
 char *handle_path(char *args)
 {
 	char *path = strdup(_getenv("PATH"));
@@ -19,7 +17,7 @@ char *handle_path(char *args)
 		dir_len = _strlen(dir);
 		args_len = _strlen(args);
 		path_len = dir_len + args_len + 2;
-		
+
 		cmd_path = malloc(path_len);
 		if (cmd_path == NULL)
 		{
@@ -29,8 +27,8 @@ char *handle_path(char *args)
 		_strcpy(cmd_path, dir);
 		_strcat(cmd_path, "/");
 		_strcat(cmd_path, args);
-		
-		if (access(cmd_path, X_OK) == 0 && access(cmd_path, F_OK) == 0)
+
+		if (check_exec(cmd_path))
 			return (cmd_path);
 		free(cmd_path);
 		dir = strtok(NULL, ":");
@@ -38,81 +36,65 @@ char *handle_path(char *args)
 	free(path);
 	return (NULL);
 }
-char *_getenv(const char *name)
-{
-	extern char **environ;
-	size_t name_len = _strlen(name);
-	int i;
 
-	for (i = 0; environ[i] != NULL; i++)
-	{
-		if (_strncmp(environ[i], name, name_len) == 0 && environ[i][name_len] == '=')
-		{
-			char *value = &environ[i][name_len + 1];
-			return (value);
-		}
-	}
-	return (NULL);
-}
-
-void exec_command(char **args)
+/**
+ * execute - Main external commnand handler
+ * @args: Arguments passed
+ * Return: Void
+ */
+void execute(char **args)
 {
-	pid_t pid, wpid;
+	pid_t pid;
 	int status;
 
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork error");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		if (execve(args[0], args, environ) == -1)
+			perror("execve error");
+		exit(EXIT_FAILURE);
+	}
+
+	if (pid > 0)
+	{
+		waitpid(pid, &status, WUNTRACED);
+		if (WIFEXITED(status))
+			errno = WEXITSTATUS(status);
+	}
+}
+
+/**
+ * exec_command - Handles external commands
+ * @args: Arguments passed
+ * Return: void
+ */
+void exec_command(char **args)
+{
+
+	/* If a full path to an executable is entered */
 	if (check_exec(args[0]) == 1)
 	{
-		pid = fork();
-		if (pid < 0)
-		{
-			perror("fork error");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid == 0)
-		{
-			if (execve(args[0], args, NULL) == -1)
-				perror("execve error");
-			exit(EXIT_FAILURE);
-		}
+		execute(args);
 	}
 	else
 	{
+		/* Try to get the full path using the system PATH env variable */
 		char *cmd_path = handle_path(args[0]);
 
 		if (cmd_path != NULL)
 		{
 			args[0] = cmd_path;
-			pid = fork();
-			
-			if (pid < 0)
-			{
-				perror("fork error");
-				exit(EXIT_FAILURE);
-			}
-			else if (pid == 0)
-			{
-				if (execve(cmd_path, args, NULL) == -1)
-					perror("execve error");
-				exit(EXIT_FAILURE);
-			}
-			free(cmd_path);
+			execute(args);
 		}
 		else
 		{
 			perror("Error: Executable file not found.\n");
 			exit(EXIT_FAILURE);
 		}
-	}
-	if (pid > 0)
-	{
-		do
-		{
-			wpid = waitpid(pid, &status, WUNTRACED);
-			if (wpid == -1)
-			{
-				perror("waitpid error");
-				exit(EXIT_FAILURE);
-			}
-		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
 }

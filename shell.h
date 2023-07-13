@@ -1,8 +1,6 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#define MAX_TOKENS 64
-#define DELIM " \t\r\n\a"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,6 +10,36 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <errno.h>
+
+#include "shell_macros.h"
+
+extern char **environ;
+extern int errno;
+
+/**
+ * struct pd - Program Data
+ * @name: Path of the shell when ran
+ * @execution_count: Tracks the number of commands executed
+ * @cmd: The current running command
+ */
+typedef struct pd
+{
+	char *name;
+	int execution_count;
+	char *cmd;
+} shell_info;
+
+/**
+ * struct bf - Builtin-function
+ * @cmd: The builtin command
+ * @action: The function to handle the command
+ */
+typedef struct bf
+{
+	char *cmd;
+	int (*action)(shell_info *data);
+} builtin_action;
 
 /*string functions*/
 char *_strcat(char *dest, const char *src);
@@ -27,10 +55,15 @@ char *_getenv(const char *name);
 char *handle_path(char *args);
 int check_exec(char *args);
 void exec_command(char **args);
-void print_error();
-void print_environment();
-int is_eof();
-void handle_eof();
-void shell_loop();
+void print_error(void);
+int is_eof(void);
+void handle_eof(void);
+void shell_loop(char *prompt, shell_info *data);
+int is_builtin(shell_info *data);
+void init_data(shell_info *data);
+
+/* Builtin command handlers */
+int print_environment(shell_info *data);
+int builtin_exit(shell_info *data);
 
 #endif

@@ -1,13 +1,20 @@
 #include "shell.h"
 
-void shell_loop(void)
+/**
+ * shell_loop - Main shell loop
+ * @prompt: The prompt to show, Enter string for
+ * non-interractive mode
+ * @data: Data of the shell
+ */
+void shell_loop(char *prompt, shell_info *data)
 {
 	char *line;
 	char **args;
+	int builtin;
 
-	while (1)
+	while (++(data->execution_count))
 	{
-		write(1, "$ ", 2);
+		write(1, prompt, _strlen(prompt));
 		line = read_line();
 
 		if (line[0] == '\0')
@@ -17,17 +24,12 @@ void shell_loop(void)
 		}
 
 		args = tokenize_input(line);
-		if (strcmp(args[0], "exit") == 0)
-		{
-			free(args);
-			free(line);
-			break;
-		}
-		else if (strcmp(args[0], "env") == 0)
-			print_environment();
-		else
+		data->cmd = args[0];
+		builtin = is_builtin(data);
+
+		if (builtin == -1)
 			exec_command(args);
-		
+
 		free(args);
 		free(line);
 	}

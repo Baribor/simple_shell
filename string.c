@@ -1,5 +1,10 @@
 #include "shell.h"
 
+/**
+ * _strlen - Evaluates the length of a string
+ * @str: The string
+ * Return: The length of the string
+ */
 size_t _strlen(const char *str)
 {
 	size_t len = 0;
@@ -9,6 +14,12 @@ size_t _strlen(const char *str)
 	return (len);
 }
 
+/**
+ * _strcpy - Copy a memory area of `src` into `dest`
+ * @dest: The destination memeory area
+ * @src: The source to copy from
+ * Return: Pointer to the dest memory area
+ */
 char *_strcpy(char *dest, const char *src)
 {
 	size_t i = 0;
@@ -22,11 +33,17 @@ char *_strcpy(char *dest, const char *src)
 	return (dest);
 }
 
+/**
+ * _strcat - Add memory area of `src` to `dest`
+ * @dest: The destination memeory area
+ * @src: The source to copy from
+ * Return: Pointer to the dest memory area
+ */
 char *_strcat(char *dest, const char *src)
 {
 	size_t dest_len = _strlen(dest);
 	size_t i = 0;
-	
+
 	while (src[i] != '\0')
 	{
 		dest[dest_len + i] = src[i];
@@ -36,6 +53,15 @@ char *_strcat(char *dest, const char *src)
 	return (dest);
 }
 
+/**
+ * _strncmp - Checks if `n` characters of two strings matches
+ * @s1: The first string
+ * @s2: The second string
+ * @n: The number of characters to match
+ * Return: 0 if they match else the lexicological
+ * difference between `s1` and `s2` at the index of
+ * mismatch
+ */
 int _strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t i = 0;
@@ -47,6 +73,6 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 		i++;
 	}
 	if (i == n)
-		return 0;
+		return (0);
 	return (s1[i] - s2[i]);
 }

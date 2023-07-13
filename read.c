@@ -11,7 +11,7 @@ char *read_line(void)
 
 	if (bytes_read == -1)
 	{
-		if(is_eof(0))
+		if (is_eof(0))
 			handle_eof();
 		else
 		{
@@ -23,20 +23,25 @@ char *read_line(void)
 		line[bytes_read - 1] = '\0';
 	return (line);
 }
+
+/**
+ * is_eof - Check for EOF
+ * @fd: File descriptor
+ * Return: 1 if EOF else 0
+ */
 int is_eof(int fd)
 {
 	char c;
 	ssize_t bytes = read(fd, &c, 1);
 
-	if (bytes == 0)
-		return (1);
-	else
-		return (0);
+	return (bytes == 0);
 }
+
+/**
+ * handle_eof - EOF handler for non_interractive mode
+ * Return: void
+ */
 void handle_eof(void)
 {
-	char new_line = '\n';
-
-	write(1, &new_line, 1);
-	exit(EXIT_SUCCESS);
+	exit(errno);
 }
