@@ -48,7 +48,7 @@ size_t _strlen(const char *str);
 int _strncmp(const char *s1, const char *s2, size_t n);
 size_t _strcspn(char *str, char *charset);
 char *_strdup(const char *str);
-
+int _strcmp(char *s1, char *s2);
 /* other relevant functions */
 void _memcpy(void *dest, const void *src, size_t n);
 
