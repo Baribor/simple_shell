@@ -28,6 +28,7 @@ int print_environment(shell_info *data)
  */
 int builtin_exit(shell_info *data)
 {
-	(void)data;
+	free_array_of_pointers(data->args);
+	free(data->cmdline);
 	exit(EXIT_SUCCESS);
 }

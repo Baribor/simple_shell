@@ -93,6 +93,6 @@ char *_strdup(const char *str)
 
 	if (!dup)
 		return (NULL);
-	_memcpy(dup, str, len);
+	_strcpy(dup, str);
 	return (dup);
 }

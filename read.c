@@ -1,9 +1,10 @@
 #include "shell.h"
 /**
  * read_line - reads input from standard input
+ * @data: Program data
  * Return: returns the line read
  */
-char *read_line(void)
+void read_line(shell_info *data)
 {
 	char *line = NULL;
 	size_t bufsize = 0;
@@ -11,7 +12,8 @@ char *read_line(void)
 
 	if (bytes_read == -1)
 	{
-		if (is_eof(0))
+		free(line);
+		if (is_eof(STDIN_FILENO))
 			handle_eof();
 		else
 		{
@@ -21,7 +23,7 @@ char *read_line(void)
 	}
 	if (bytes_read > 0 && line[bytes_read - 1] == '\n')
 		line[bytes_read - 1] = '\0';
-	return (line);
+	data->cmdline = line;
 }
 
 /**

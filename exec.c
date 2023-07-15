@@ -8,7 +8,7 @@
 char *handle_path(char *args)
 {
 	char *path = _strdup(_getenv("PATH"));
-	char *dir = strtok(path, ":");
+	char *dir = _strtok(path, ":");
 	char *cmd_path;
 	size_t dir_len, args_len, path_len;
 
@@ -34,7 +34,7 @@ char *handle_path(char *args)
 			return (cmd_path);
 		}
 		free(cmd_path);
-		dir = strtok(NULL, ":");
+		dir = _strtok(NULL, ":");
 	}
 	free(path);
 	return (NULL);
@@ -89,6 +89,7 @@ int exec_command(char **args)
 			errno = 127;
 			return (127);
 		}
+		free(args[0]);
 		args[0] = cmd_path;
 	}
 
@@ -97,9 +98,7 @@ int exec_command(char **args)
 	if (fileStat == 1)
 	{
 		execute(args);
-		free(cmd_path);
 		return (0);
 	}
-	free(cmd_path);
 	return (fileStat);
 }

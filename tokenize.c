@@ -17,7 +17,7 @@ char **tokenize_input(char *line)
 		perror("Allocation error");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok(line, DELIM); /*splits line int strings */
+	token = _strdup(_strtok(line, DELIM)); /*splits line int strings */
 
 	while (token != NULL)
 	{
@@ -33,7 +33,7 @@ char **tokenize_input(char *line)
 				exit(EXIT_FAILURE);
 			}
 		}
-		token = strtok(NULL, DELIM);
+		token = _strdup(_strtok(NULL, DELIM));
 	}
 	tokens[count] = NULL;
 	return (tokens);

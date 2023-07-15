@@ -8,7 +8,9 @@
 void init_data(shell_info *data)
 {
 	data->cmd = NULL;
+	data->cmdline = NULL;
 	data->execution_count = 0;
+	data->args = NULL;
 }
 
 /**
@@ -38,7 +40,7 @@ int is_builtin(shell_info *data)
 /**
  * check_exec - Checks if a file exits and it's an executable
  * @args: Path to the file
- * Return: 1 if all conditions are satisfied, else 0
+ * Return: 1 if all conditions are satisfied.
  */
 int check_exec(char *args)
 {
@@ -47,7 +49,7 @@ int check_exec(char *args)
 	/* If path exists */
 	if (stat(args, &fileStatus) == 0)
 	{
-		/* If path is not a directory and is an executable */
+		/* If path is a directory or is not an executable */
 		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
 		{
 			errno = 126;
