@@ -28,8 +28,6 @@ int print_environment(shell_info *data)
  */
 int builtin_exit(shell_info *data)
 {
-	free(data->name);
-	free(data->cmd);
-
+	(void)data;
 	exit(EXIT_SUCCESS);
 }
