@@ -30,5 +30,6 @@ int builtin_exit(shell_info *data)
 {
 	free(data->name);
 	free(data->cmd);
+
 	exit(EXIT_SUCCESS);
 }
