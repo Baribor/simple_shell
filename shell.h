@@ -62,11 +62,11 @@ void free_program_data(shell_info *data);
 
 /* command line interpreter functions */
 void read_line(shell_info *data);
-char **tokenize_input(char *line);
+void tokenize_input(shell_info *data);
 char *_getenv(const char *name);
 char *handle_path(char *args);
 int check_exec(char *args);
-int exec_command(char **args);
+int exec_command(shell_info *data);
 int is_eof(int fd);
 void handle_eof(void);
 void shell_loop(char *prompt, shell_info *data);

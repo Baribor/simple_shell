@@ -2,10 +2,10 @@
 
 /**
  * tokenize_input - Splits a string into tokens
- * @line: The string to split
+ * @data: Program data
  * Return: An array of string tokens
  */
-char **tokenize_input(char *line)
+void tokenize_input(shell_info *data)
 {
 	/* allocates memory for array of strings */
 	char **tokens = malloc(MAX_TOKENS * sizeof(char *));
@@ -17,7 +17,7 @@ char **tokenize_input(char *line)
 		perror("Allocation error");
 		exit(EXIT_FAILURE);
 	}
-	token = _strdup(_strtok(line, DELIM)); /*splits line int strings */
+	token = _strdup(_strtok(data->cmdline, DELIM)); /*splits line int strings */
 
 	while (token != NULL)
 	{
@@ -36,5 +36,5 @@ char **tokenize_input(char *line)
 		token = _strdup(_strtok(NULL, DELIM));
 	}
 	tokens[count] = NULL;
-	return (tokens);
+	data->args = tokens;
 }

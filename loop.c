@@ -8,7 +8,6 @@
  */
 void shell_loop(char *prompt, shell_info *data)
 {
-	char **args;
 	int builtin, error_no;
 
 	while (++(data->execution_count))
@@ -22,13 +21,11 @@ void shell_loop(char *prompt, shell_info *data)
 			continue;
 		}
 
-		args = tokenize_input(data->cmdline);
-		data->cmd = args[0];
-		data->args = args;
+		tokenize_input(data);
 		builtin = error_no = is_builtin(data);
 
 		if (builtin == -1)
-			error_no = exec_command(args);
+			error_no = exec_command(data);
 
 		if (error_no != 0)
 			print_error(error_no, data);

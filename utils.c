@@ -29,7 +29,7 @@ int is_builtin(shell_info *data)
 
 	while (actions[i].cmd)
 	{
-		if (_strcmp(data->cmd, actions[i].cmd) == 0)
+		if (_strcmp(data->args[0], actions[i].cmd) == 0)
 			return (actions[i].action(data));
 		i++;
 	}

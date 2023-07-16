@@ -73,31 +73,31 @@ void execute(char **args)
 
 /**
  * exec_command - Handles external commands
- * @args: Arguments passed
+ * @data: Program data
  * Return: The error code of the running process
  */
-int exec_command(char **args)
+int exec_command(shell_info *data)
 {
-	char *cmd_path = args[0];
+	char *cmd_path = data->args[0];
 	int fileStat;
 
 	if (!(cmd_path[0] == '/' || cmd_path[0] == '.'))
 	{
-		cmd_path = handle_path(args[0]);
+		cmd_path = handle_path(cmd_path);
 		if (!cmd_path)
 		{
 			errno = 127;
 			return (127);
 		}
-		free(args[0]);
-		args[0] = cmd_path;
+		free(data->args[0]);
+		data->args[0] = cmd_path;
 	}
 
 	fileStat = check_exec(cmd_path);
 	/* If a full path to an executable is entered */
 	if (fileStat == 1)
 	{
-		execute(args);
+		execute(data->args);
 		return (0);
 	}
 	return (fileStat);

@@ -28,7 +28,7 @@ void print_error(int code, shell_info *data)
 		_print_err(": ");
 		_print_err(exec_count);
 		_print_err(": ");
-		_print_err(data->cmd);
+		_print_err(data->args[0]);
 		_print_err(": ");
 		_print_err(code == 127 ? "not found\n" : "Permission denied\n");
 	}
