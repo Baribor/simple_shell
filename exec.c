@@ -87,18 +87,19 @@ int exec_command(shell_info *data)
 		if (!cmd_path)
 		{
 			errno = 127;
-			return (127);
+			return (COMMAND_ERROR);
 		}
 		free(data->args[0]);
 		data->args[0] = cmd_path;
 	}
 
 	fileStat = check_exec(cmd_path);
-	/* If a full path to an executable is entered */
+
+	/* If the path is a valid path */
 	if (fileStat == 1)
 	{
 		execute(data->args);
-		return (0);
+		return (EXIT_SUCCESS);
 	}
 	return (fileStat);
 }

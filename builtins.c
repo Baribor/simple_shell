@@ -31,7 +31,7 @@ int builtin_exit(shell_info *data)
 
 	if (data->args[1] != NULL)
 		status = _atoi(data->args[1]);
-		
+
 	free_program_data(data);
 	exit(status);
 }
@@ -43,12 +43,18 @@ int builtin_exit(shell_info *data)
  */
 int builtin_cd(shell_info *data)
 {
-    char *dir = data->args[1];
-    int status;
-    
-    if (dir == NULL || _strcmp(dir, "-") == 0)
-        dir = ".git"; //getenv("HOME");
-    
-    status = chdir(dir);
-    return (status);
+	char *dir = data->args[1];
+	char pwd[MAX_DIR_LENGTH] = {'\0'};
+	int status;
+
+	if (dir == NULL || _strcmp(dir, "-") == 0)
+		dir = ".git"; /* getenv("HOME"); */
+
+	status = chdir(dir);
+	if (status == EXIT_SUCCESS)
+	{
+		getcwd(pwd, MAX_DIR_LENGTH);
+		/* setenv("PWD", pwd); */
+	}
+	return (status);
 }

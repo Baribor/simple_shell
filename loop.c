@@ -27,7 +27,7 @@ void shell_loop(char *prompt, shell_info *data)
 		if (builtin == NOT_BUILTIN)
 			error_no = exec_command(data);
 
-		if (error_no != 0)
+		if (error_no != EXIT_SUCCESS)
 			print_error(data);
 		free_program_data(data);
 	}

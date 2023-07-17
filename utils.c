@@ -23,9 +23,9 @@ int is_builtin(shell_info *data)
 {
 	int i = 0;
 	builtin_action actions[] = {
-		{"exit", builtin_exit},
-		{"cd", builtin_cd},
-		{"env", print_environment},
+		{BUILTIN_EXIT, builtin_exit},
+		{BUILTIN_CD, builtin_cd},
+		{BUILTIN_ENV, print_environment},
 		{NULL, NULL}};
 
 	while (actions[i].cmd)
@@ -54,10 +54,10 @@ int check_exec(char *args)
 		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
 		{
 			errno = 126;
-			return (126);
+			return (COMMAND_ERROR);
 		}
 		return (1);
 	}
 	errno = 127;
-	return (127);
+	return (COMMAND_ERROR);
 }
