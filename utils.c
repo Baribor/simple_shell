@@ -24,6 +24,7 @@ int is_builtin(shell_info *data)
 	int i = 0;
 	builtin_action actions[] = {
 		{"exit", builtin_exit},
+		{"cd", builtin_cd},
 		{"env", print_environment},
 		{NULL, NULL}};
 
@@ -34,7 +35,7 @@ int is_builtin(shell_info *data)
 		i++;
 	}
 
-	return (-1);
+	return (NOT_BUILTIN);
 }
 
 /**

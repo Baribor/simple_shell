@@ -10,26 +10,37 @@ ssize_t _print_err(char *err)
 	return (write(STDERR_FILENO, err, _strlen(err)));
 }
 
+
+void print_error_header(shell_info *data)
+{
+    char exec_count[10] = {'\0'};
+
+	number_to_string(exec_count, data->execution_count);
+    _print_err(data->name);
+	_print_err(": ");
+	_print_err(exec_count);
+	_print_err(": ");
+	_print_err(data->args[0]);
+	_print_err(": "); 
+}
+
+
 /**
  * print_error - Handles error printing
  * @code: Error code
  * @data: Program data
  * Return: Void
  */
-void print_error(int code, shell_info *data)
+void print_error(shell_info *data)
 {
-	char exec_count[10] = {'\0'};
-
-	number_to_string(exec_count, data->execution_count);
-
-	if (code == 126 || code == 127)
+	print_error_header(data);
+	if (errno == 126 || errno == 127)
+		_print_err(errno == 127 ? "not found\n" : "Permission denied\n");
+		
+	if (errno == 2)
 	{
-		_print_err(data->name);
-		_print_err(": ");
-		_print_err(exec_count);
-		_print_err(": ");
-		_print_err(data->args[0]);
-		_print_err(": ");
-		_print_err(code == 127 ? "not found\n" : "Permission denied\n");
+	    _print_err("can't cd to ");
+	    _print_err(data->args[1]);
+	    _print_err("\n");
 	}
 }

@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "shell.h"
 
 /**
@@ -32,8 +31,24 @@ int builtin_exit(shell_info *data)
 
 	if (data->args[1] != NULL)
 		status = _atoi(data->args[1]);
-
-	free_array_of_pointers(data->args);
-	free(data->cmdline);
+		
+	free_program_data(data);
 	exit(status);
+}
+
+/**
+ * builtin_cd - Handles the cd command
+ * @data: Program data
+ * Return: The status of the execution
+ */
+int builtin_cd(shell_info *data)
+{
+    char *dir = data->args[1];
+    int status;
+    
+    if (dir == NULL || _strcmp(dir, "-") == 0)
+        dir = ".git"; //getenv("HOME");
+    
+    status = chdir(dir);
+    return (status);
 }

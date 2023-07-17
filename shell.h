@@ -76,9 +76,10 @@ void init_data(shell_info *data);
 /* Builtin command handlers */
 int print_environment(shell_info *data);
 int builtin_exit(shell_info *data);
+int builtin_cd(shell_info *data);
 
 /* Output */
-void print_error(int code, shell_info *data);
+void print_error(shell_info *data);
 
 /* Converters */
 void number_to_string(char *buf, int num);

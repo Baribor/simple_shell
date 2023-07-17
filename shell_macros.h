@@ -7,5 +7,5 @@
 #define DELIM " \t\r\n\a"
 
 #define PROMPT "($) "
-
+#define NOT_BUILTIN -99
 #endif

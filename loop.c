@@ -24,11 +24,11 @@ void shell_loop(char *prompt, shell_info *data)
 		tokenize_input(data);
 		builtin = error_no = is_builtin(data);
 
-		if (builtin == -1)
+		if (builtin == NOT_BUILTIN)
 			error_no = exec_command(data);
 
 		if (error_no != 0)
-			print_error(error_no, data);
+			print_error(data);
 		free_program_data(data);
 	}
 }
