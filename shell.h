@@ -83,5 +83,5 @@ void print_error(int code, shell_info *data);
 /* Converters */
 void number_to_string(char *buf, int num);
 void reverse_string(char *str);
-
+int _atoi(char *str);
 #endif

@@ -28,7 +28,12 @@ int print_environment(shell_info *data)
  */
 int builtin_exit(shell_info *data)
 {
+	int status = EXIT_SUCCESS; /*this is the default exit status */
+
+	if (data->args[1] != NULL)
+		status = _atoi(data->args[1]);
+
 	free_array_of_pointers(data->args);
 	free(data->cmdline);
-	exit(EXIT_SUCCESS);
+	exit(status);
 }

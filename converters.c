@@ -37,3 +37,26 @@ void reverse_string(char *str)
 	}
 	free(dup);
 }
+/**
+ * _atoi - converts a string to an integer
+ * @str: string
+ * Return: integer
+ */
+int _atoi(char *str)
+{
+	int sign = 1, i = 0, result = 0;
+
+	if (str[0] == '-')
+	{
+		sign *= -1;
+		i = 1;
+	}
+	while (str[i] != '\0')
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			result = (result * 10) + (str[i] - '0');
+		i++;
+	}
+	result *= sign;
+	return (result);
+}
