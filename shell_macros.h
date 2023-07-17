@@ -8,7 +8,7 @@
 #define DELIM " \t\r\n\a"
 
 #define PROMPT "($) "
-#define NOT_BUILTIN -99
+#define NOT_BUILTIN -99 /* If a command is not a builtin command */
 #define COMMAND_ERROR -1
 
 /* Builtins */

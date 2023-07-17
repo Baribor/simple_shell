@@ -26,6 +26,11 @@ void free_array_of_pointers(char **arr)
  */
 void free_program_data(shell_info *data)
 {
-	free_array_of_pointers(data->args);
-	free(data->cmdline);
+	if (data->args)
+		free_array_of_pointers(data->args);
+	if (data->cmdline)
+		free(data->cmdline);
+
+	data->args = NULL;
+	data->cmdline = NULL;
 }

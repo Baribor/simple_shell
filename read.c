@@ -4,46 +4,40 @@
  * @data: Program data
  * Return: returns the line read
  */
-void read_line(shell_info *data)
+ssize_t read_line(shell_info *data)
 {
-	char *line = NULL;
-	size_t bufsize = 0;
-	ssize_t bytes_read = getline(&line, &bufsize, stdin);
+	char line[BUF_SIZE] = {'\0'};
+	ssize_t bytes_read;
+	static char *commands[MAX_TOKENS] = {NULL};
+	int i = 0;
 
-	if (bytes_read == -1)
+	if (commands[0] == NULL)
 	{
-		free(line);
-		if (is_eof(STDIN_FILENO))
-			handle_eof();
-		else
+		bytes_read = read(STDIN_FILENO, line, BUF_SIZE);
+
+		/* Check for EOF */
+		if (bytes_read == 0)
 		{
-			perror("read line");
-			exit(EXIT_FAILURE);
+			free_program_data(data);
+			exit(errno);
 		}
+
+		/* Split input into lines of command if needed */
+		commands[i] = _strdup(_strtok(line, "\n"));
+		while (commands[i])
+			commands[++i] = _strdup(_strtok(NULL, "\n"));
 	}
-	if (bytes_read > 0 && line[bytes_read - 1] == '\n')
-		line[bytes_read - 1] = '\0';
-	data->cmdline = line;
-}
 
-/**
- * is_eof - Check for EOF
- * @fd: File descriptor
- * Return: 1 if EOF else 0
- */
-int is_eof(int fd)
-{
-	char c;
-	ssize_t bytes = read(fd, &c, 1);
+	data->cmdline = commands[0];
 
-	return (bytes == 0);
-}
+	/**
+	 * Shift the commands array so the first index
+	 * can point to the next command.
+	 */
+	for (i = 0; commands[i]; i++)
+	{
+		commands[i] = commands[i + 1];
+	}
 
-/**
- * handle_eof - EOF handler for non_interractive mode
- * Return: void
- */
-void handle_eof(void)
-{
-	exit(errno);
+	return (data->cmdline ? _strlen(data->cmdline) : 0);
 }

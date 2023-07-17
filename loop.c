@@ -9,17 +9,15 @@
 void shell_loop(char *prompt, shell_info *data)
 {
 	int builtin, error_no;
+	ssize_t cmd_length;
 
 	while (++(data->execution_count))
 	{
 		write(STDOUT_FILENO, prompt, _strlen(prompt));
-		read_line(data);
+		cmd_length = read_line(data);
 
-		if (data->cmdline[0] == '\0')
-		{
-			free(data->cmdline);
+		if (cmd_length == 0)
 			continue;
-		}
 
 		tokenize_input(data);
 		builtin = error_no = is_builtin(data);
