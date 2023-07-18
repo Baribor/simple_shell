@@ -48,7 +48,7 @@ int builtin_cd(shell_info *data)
 	int status;
 
 	if (dir == NULL || _strcmp(dir, "-") == 0)
-		dir = ".git"; /* getenv("HOME"); */
+		dir = _getenv("HOME");
 
 	status = chdir(dir);
 	if (status == EXIT_SUCCESS)
