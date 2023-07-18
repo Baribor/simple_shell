@@ -9,7 +9,7 @@
 void shell_loop(char *prompt, shell_info *data)
 {
 	int builtin, error_no;
-	ssize_t cmd_length;
+	ssize_t cmd_length, i;
 
 	while (++(data->execution_count))
 	{
@@ -19,14 +19,26 @@ void shell_loop(char *prompt, shell_info *data)
 		if (cmd_length == 0)
 			continue;
 
-		tokenize_input(data);
-		builtin = error_no = is_builtin(data);
+		build_command_list(data);
 
-		if (builtin == NOT_BUILTIN)
-			error_no = exec_command(data);
+		for (i = 0; data->cmdlist[i]; ++i)
+		{
+			data->cmd = data->cmdlist[i];
+			tokenize_input(data);
 
-		if (error_no != EXIT_SUCCESS)
-			print_error(data);
-		free_program_data(data);
+			builtin = error_no = is_builtin(data);
+
+			if (builtin == NOT_BUILTIN)
+				error_no = exec_command(data);
+
+			if (error_no != EXIT_SUCCESS)
+				print_error(data);
+
+			/* Free the data for the current command */
+			free_program_data(data);
+		}
+
+		/* Free the command list */
+		free_array_of_pointers(data->cmdlist);
 	}
 }

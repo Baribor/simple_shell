@@ -11,6 +11,7 @@ void init_data(shell_info *data)
 	data->cmdline = NULL;
 	data->execution_count = 0;
 	data->args = NULL;
+	data->cmdlist = NULL;
 }
 
 /**

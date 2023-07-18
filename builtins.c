@@ -32,7 +32,7 @@ int builtin_exit(shell_info *data)
 	if (data->args[1] != NULL)
 		status = _atoi(data->args[1]);
 
-	free_program_data(data);
+	free_all_data(data);
 	exit(status);
 }
 
@@ -47,6 +47,7 @@ int builtin_cd(shell_info *data)
 	char pwd[MAX_DIR_LENGTH] = {'\0'};
 	int status;
 
+	/* Check if no argument or - was passed */
 	if (dir == NULL || _strcmp(dir, "-") == 0)
 		dir = _getenv("HOME");
 

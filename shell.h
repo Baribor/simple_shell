@@ -24,6 +24,7 @@ extern int errno;
  * @cmd: The current running command
  * @args: Current command arguments
  * @cmdline: The command read from stdin
+ * @cmdlist: The commands available in a command line
  */
 typedef struct pd
 {
@@ -32,6 +33,7 @@ typedef struct pd
 	char *cmd;
 	char **args;
 	char *cmdline;
+	char **cmdlist;
 } shell_info;
 
 /**
@@ -59,6 +61,7 @@ char *_strtok(char *s, char *delim);
 void _memcpy(void *dest, const void *src, size_t n);
 void free_array_of_pointers(char **arr);
 void free_program_data(shell_info *data);
+void free_all_data(shell_info *data);
 
 /* command line interpreter functions */
 ssize_t read_line(shell_info *data);
@@ -70,6 +73,7 @@ int exec_command(shell_info *data);
 void shell_loop(char *prompt, shell_info *data);
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
+void build_command_list(shell_info *data);
 
 /* Builtin command handlers */
 int print_environment(shell_info *data);
