@@ -76,6 +76,8 @@ void init_data(shell_info *data);
 /* Builtin command handlers */
 int print_environment(shell_info *data);
 int builtin_exit(shell_info *data);
+int builtin_setenv(shell_info *data);
+int builtin_unsetenv(shell_info *data);
 
 /* Output */
 void print_error(int code, shell_info *data);

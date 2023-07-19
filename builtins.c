@@ -35,5 +35,80 @@ int builtin_exit(shell_info *data)
 
 	free_array_of_pointers(data->args);
 	free(data->cmdline);
+	free_array_of_pointers(environ);
 	exit(status);
+}
+/**
+ * builtin_setenv - Initialize a new environment variable
+ * @data: program data
+ * Return: 0 if successful otherwise, -1
+ */
+int builtin_setenv(shell_info *data)
+{
+	char *var = data->args[1];
+	char *val = data->args[2];
+	char *env;
+	int i, len = _strlen(var);
+
+	if (!var || !val)
+	{
+		perror("Invalid argument for setenv\n");
+		return (-1);
+	}
+
+	env = malloc(len + _strlen(val) + 2);
+	if (!env)
+	{
+		perror("Allocation error\n");
+		return (-1);
+	}
+
+	_strcpy(env, var);
+	_strcat(env, "=");
+	_strcat(env, val);
+
+	for (i = 0; environ[i]; i++)
+	{
+		if (_strncmp(environ[i], var, len) == 0 && environ[i][len] == '=')
+		{
+			free(environ[i]);
+			environ[i] = env;
+			free(env);
+			return (0);
+		}
+	}
+	free(environ[i]);
+	environ[i] = env;
+	environ[i + 1] = NULL;
+	return (0);
+}
+/**
+ *  builtin_unsetenv - deletes an existing env variable
+ *  @data: Program data
+ *  Return: 0 if successful
+ */
+int builtin_unsetenv(shell_info *data)
+{
+	char *var = data->args[1];
+	char *env = _getenv(var);
+	int len = _strlen(var);
+	int i, found = 0;
+
+	if (!env)
+		return (-1);
+	for (i = 0; environ[i]; i++)
+	{
+		if (!found)
+		{
+			if (_strncmp(environ[i], var, len) == 0 && environ[i][len] == '=')
+			{
+				free(environ[i]);
+				found = 1;
+			}
+			continue;
+		}
+		environ[i - 1] = environ[i];
+	}
+	environ[i - 1] = NULL;
+	return (0);
 }

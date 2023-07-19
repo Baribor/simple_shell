@@ -7,6 +7,24 @@
  */
 void init_data(shell_info *data)
 {
+	char **env;
+	char *var;
+	int i;
+
+	env = malloc(64 * sizeof(char *));
+	if (!env)
+	{
+		perror("Allocation error");
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; environ[i]; i++)
+	{
+		var = _strdup(environ[i]);
+		env[i] = var;
+	}
+	env[i] = NULL;
+	environ = env;
+
 	data->cmd = NULL;
 	data->cmdline = NULL;
 	data->execution_count = 0;
@@ -25,6 +43,8 @@ int is_builtin(shell_info *data)
 	builtin_action actions[] = {
 		{"exit", builtin_exit},
 		{"env", print_environment},
+		{"setenv", builtin_setenv},
+		{"unsetenv", builtin_unsetenv},
 		{NULL, NULL}};
 
 	while (actions[i].cmd)
