@@ -132,7 +132,7 @@ int builtin_cd(shell_info *data)
 	if (status == EXIT_SUCCESS)
 	{
 		getcwd(pwd, MAX_DIR_LENGTH);
-		/* setenv("PWD", pwd); */
+		/*_setenv("PWD", pwd);*/
 	}
 	return (status);
 }
