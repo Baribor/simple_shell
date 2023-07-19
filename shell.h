@@ -74,6 +74,7 @@ void shell_loop(char *prompt, shell_info *data);
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
+int check_comment(shell_info *data);
 
 /* Builtin command handlers */
 int print_environment(shell_info *data);
