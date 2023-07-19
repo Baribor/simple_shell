@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "shell.h"
 
 /**
@@ -36,6 +35,7 @@ int builtin_exit(shell_info *data)
 	free_array_of_pointers(data->args);
 	free(data->cmdline);
 	free_array_of_pointers(environ);
+	free_all_data(data);
 	exit(status);
 }
 /**
@@ -111,4 +111,28 @@ int builtin_unsetenv(shell_info *data)
 	}
 	environ[i - 1] = NULL;
 	return (0);
+}
+
+/**
+ * builtin_cd - Handles the cd command
+ * @data: Program data
+ * Return: The status of the execution
+ */
+int builtin_cd(shell_info *data)
+{
+	char *dir = data->args[1];
+	char pwd[MAX_DIR_LENGTH] = {'\0'};
+	int status;
+
+	/* Check if no argument or - was passed */
+	if (dir == NULL || _strcmp(dir, "-") == 0)
+		dir = _getenv("HOME");
+
+	status = chdir(dir);
+	if (status == EXIT_SUCCESS)
+	{
+		getcwd(pwd, MAX_DIR_LENGTH);
+		/* setenv("PWD", pwd); */
+	}
+	return (status);
 }

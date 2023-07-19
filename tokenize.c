@@ -17,7 +17,7 @@ void tokenize_input(shell_info *data)
 		perror("Allocation error");
 		exit(EXIT_FAILURE);
 	}
-	token = _strdup(_strtok(data->cmdline, DELIM)); /*splits line int strings */
+	token = _strdup(_strtok(data->cmd, DELIM)); /*splits line into strings */
 
 	while (token != NULL)
 	{

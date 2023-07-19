@@ -29,6 +29,7 @@ void init_data(shell_info *data)
 	data->cmdline = NULL;
 	data->execution_count = 0;
 	data->args = NULL;
+	data->cmdlist = NULL;
 }
 
 /**
@@ -41,10 +42,11 @@ int is_builtin(shell_info *data)
 {
 	int i = 0;
 	builtin_action actions[] = {
-		{"exit", builtin_exit},
-		{"env", print_environment},
-		{"setenv", builtin_setenv},
-		{"unsetenv", builtin_unsetenv},
+		{BUILTIN_EXIT, builtin_exit},
+		{BUILTIN_CD, builtin_cd},
+		{BUILTIN_ENV, print_environment},
+		{BUILTIN_SETENV, builtin_setenv},
+		{BUILTIN_UNSETENV, builtin_unsetenv},
 		{NULL, NULL}};
 
 	while (actions[i].cmd)
@@ -54,7 +56,7 @@ int is_builtin(shell_info *data)
 		i++;
 	}
 
-	return (-1);
+	return (NOT_BUILTIN);
 }
 
 /**
@@ -73,10 +75,10 @@ int check_exec(char *args)
 		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
 		{
 			errno = 126;
-			return (126);
+			return (COMMAND_ERROR);
 		}
 		return (1);
 	}
 	errno = 127;
-	return (127);
+	return (COMMAND_ERROR);
 }
