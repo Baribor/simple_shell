@@ -75,6 +75,11 @@ int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
 
+/* environment funtions */
+char *_getenv(const char *name);
+int _setenv(char *var, char *val);
+int _unsetenv(char *var);
+
 /* Builtin command handlers */
 int print_environment(shell_info *data);
 int builtin_exit(shell_info *data);

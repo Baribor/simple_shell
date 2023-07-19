@@ -21,3 +21,78 @@ char *_getenv(const char *name)
 	}
 	return (NULL);
 }
+/**
+ * _setenv - adds or modifies an environment variable
+ * @var: VARIABLE
+ * @val: VALUE
+ * Return: 0 if successful, otherwise, -1
+ */
+int _setenv(char *var, char *val)
+{
+	char *env;
+	int i, len = _strlen(var);
+
+	if (!var || !val)
+	{
+		perror("Invalid argument for setenv\n");
+		return (-1);
+	}
+	env = malloc(len + _strlen(val) + 2);
+	if (!env)
+	{
+		perror("Allocation error\n");
+		return (-1);
+	}
+
+	_strcpy(env, var);
+	_strcat(env, "=");
+	_strcat(env, val);
+
+	for (i = 0; environ[i]; i++)
+	{
+		if (_strncmp(environ[i], var, len) == 0 && environ[i][len] == '=')
+		{
+			free(environ[i]);
+			environ[i] = env;
+			free(env);
+			return (0);
+		}
+	}
+	free(environ[i]);
+	environ[i] = env;
+	environ[i + 1] = NULL;
+	return (0);
+}
+/**
+ * _unsetenv - removes or frees environment variable
+ * @var: VARIABLE name
+ * Return: 0 on success, else -1
+ */
+int _unsetenv(char *var)
+{
+	char *env = _getenv(var);
+	int len = _strlen(var);
+	int i, found = 0;
+
+	if (!env)
+	{
+		perror("Variable not found\n");
+		return (-1);
+	}
+
+	for (i = 0; environ[i]; i++)
+	{
+		if (!found)
+		{
+			if (_strncmp(environ[i], var, len) == 0 && environ[i][len] == '=')
+			{
+				free(environ[i]);
+				found = 1;
+			}
+			continue;
+		}
+		environ[i - 1] = environ[i];
+	}
+	environ[i - 1] = NULL;
+	return (0);
+}
