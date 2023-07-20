@@ -71,3 +71,28 @@ char *_strtok(char *str, char *delim)
 	}
 	return (token);
 }
+
+/**
+ * _strdup_range - Duplicates a range of a string
+ * @src: The string
+ * @from: The start index (inclusive)
+ * @to: The end index (exclusive)
+ * Return: The new string
+ */
+char *_strdup_range(char *src, int from, int to)
+{
+	int i = 0;
+	char *dup;
+
+	dup = malloc((to - from + 2) * sizeof(char));
+	if (!dup)
+	{
+		perror("Allocation error");
+		exit(EXIT_FAILURE);
+	}
+
+	while (from < to)
+		dup[i++] = src[from++];
+	dup[i] = '\0';
+	return (dup);
+}

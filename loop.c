@@ -8,19 +8,40 @@
 void run_command(shell_info *data)
 {
 	int builtin, error_no;
+	int i;
+	ops_data logic_data = {NULL};
 
-	tokenize_input(data);
+	expand_logical_ops(data->cmd, &logic_data);
 
-	builtin = error_no = is_builtin(data);
+	for (i = 0; logic_data.operands[i]; i++)
+	{
+		/* Check operation */
+		if (i > 0)
+		{
+			if (logic_data.operators[i - 1] == LOGICAL_AND && errno != 0)
+				break;
+			if (logic_data.operators[i - 1] == LOGICAL_OR && errno == 0)
+				break;
+		}
 
-	if (builtin == NOT_BUILTIN)
-		error_no = exec_command(data);
+		data->logic_data = &logic_data;
+		data->cmd = logic_data.operands[i];
+		tokenize_input(data);
 
-	if (error_no != EXIT_SUCCESS)
-		print_error(data);
+		builtin = error_no = is_builtin(data);
 
-	/* Free the data for the current command */
-	free_program_data(data);
+		if (builtin == NOT_BUILTIN)
+			error_no = exec_command(data);
+
+		if (error_no != EXIT_SUCCESS)
+			print_error(data);
+
+		/* Free the data for the current command */
+		free_program_data(data);
+	}
+
+	/* Free operands */
+	free_array_of_pointers(logic_data.operands);
 }
 
 /**

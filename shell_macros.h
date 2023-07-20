@@ -15,4 +15,9 @@
 #define BUILTIN_CD "cd"
 #define BUILTIN_ENV "env"
 #define BUILTIN_EXIT "exit"
+
+/* Logical operators */
+#define LOGICAL_OR 1
+#define LOGICAL_AND 2
+
 #endif

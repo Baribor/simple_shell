@@ -42,6 +42,9 @@ void free_program_data(shell_info *data)
  */
 void free_all_data(shell_info *data)
 {
+	if (data->logic_data->operands)
+		free_array_of_pointers(data->logic_data->operands);
+
 	if (data->cmdlist)
 		free_array_of_pointers(data->cmdlist);
 

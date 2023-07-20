@@ -7,11 +7,15 @@
  */
 void init_data(shell_info *data)
 {
+	ops_data logic_data = {NULL};
+
 	data->cmd = NULL;
 	data->cmdline = NULL;
 	data->execution_count = 0;
 	data->args = NULL;
 	data->cmdlist = NULL;
+
+	data->logic_data = &logic_data;
 }
 
 /**
