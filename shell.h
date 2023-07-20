@@ -73,7 +73,6 @@ char *_strtok(char *s, char *delim);
 char *_strdup_range(char *src, int from, int to);
 
 /* other relevant functions */
-void _memcpy(void *dest, const void *src, size_t n);
 void free_array_of_pointers(char **arr);
 void free_program_data(shell_info *data);
 void free_all_data(shell_info *data);
@@ -81,7 +80,6 @@ void free_all_data(shell_info *data);
 /* command line interpreter functions */
 ssize_t read_line(shell_info *data);
 void tokenize_input(shell_info *data);
-char *_getenv(const char *name);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
@@ -92,9 +90,16 @@ void build_command_list(shell_info *data);
 int check_comment(shell_info *data);
 ops_data *expand_logical_ops(char *cmd, ops_data *data);
 
+/* environment funtions */
+char *_getenv(const char *name);
+int _setenv(char *var, char *val);
+int _unsetenv(char *var);
+
 /* Builtin command handlers */
 int print_environment(shell_info *data);
 int builtin_exit(shell_info *data);
+int builtin_setenv(shell_info *data);
+int builtin_unsetenv(shell_info *data);
 int builtin_cd(shell_info *data);
 
 /* Output */

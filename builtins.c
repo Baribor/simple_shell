@@ -35,6 +35,28 @@ int builtin_exit(shell_info *data)
 	free_all_data(data);
 	exit(status);
 }
+/**
+ * builtin_setenv - Initialize a new environment variable
+ * @data: program data
+ * Return: 0 if successful otherwise, -1
+ */
+int builtin_setenv(shell_info *data)
+{
+	int temp = _setenv(data->args[1], data->args[2]);
+
+	return (temp);
+}
+/**
+ *  builtin_unsetenv - deletes an existing env variable
+ *  @data: Program data
+ *  Return: 0 if successful
+ */
+int builtin_unsetenv(shell_info *data)
+{
+	int temp = _unsetenv(data->args[1]);
+
+	return (temp);
+}
 
 /**
  * builtin_cd - Handles the cd command
@@ -55,7 +77,7 @@ int builtin_cd(shell_info *data)
 	if (status == EXIT_SUCCESS)
 	{
 		getcwd(pwd, MAX_DIR_LENGTH);
-		/* setenv("PWD", pwd); */
+		_setenv("PWD", pwd);
 	}
 	return (status);
 }

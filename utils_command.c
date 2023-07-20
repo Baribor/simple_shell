@@ -1,6 +1,30 @@
 #include "shell.h"
 
 /**
+ * check_exec - Checks if a file exits and it's an executable
+ * @args: Path to the file
+ * Return: 1 if all conditions are satisfied.
+ */
+int check_exec(char *args)
+{
+	struct stat fileStatus;
+
+	/* If path exists */
+	if (stat(args, &fileStatus) == 0)
+	{
+		/* If path is a directory or is not an executable */
+		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
+		{
+			errno = 126;
+			return (COMMAND_ERROR);
+		}
+		return (1);
+	}
+	errno = 127;
+	return (COMMAND_ERROR);
+}
+
+/**
  * build_command_list - Builds the command list for a
  * single command line
  * @data: Program data

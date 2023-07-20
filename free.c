@@ -49,4 +49,5 @@ void free_all_data(shell_info *data)
 		free_array_of_pointers(data->cmdlist);
 
 	free_program_data(data);
+	free_array_of_pointers(environ);
 }

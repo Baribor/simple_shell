@@ -8,6 +8,23 @@
 void init_data(shell_info *data)
 {
 	ops_data logic_data = {NULL};
+	char **env;
+	char *var;
+	int i;
+
+	env = malloc(64 * sizeof(char *));
+	if (!env)
+	{
+		perror("Allocation error");
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; environ[i]; i++)
+	{
+		var = _strdup(environ[i]);
+		env[i] = var;
+	}
+	env[i] = NULL;
+	environ = env;
 
 	data->cmd = NULL;
 	data->cmdline = NULL;
@@ -31,6 +48,8 @@ int is_builtin(shell_info *data)
 		{BUILTIN_EXIT, builtin_exit},
 		{BUILTIN_CD, builtin_cd},
 		{BUILTIN_ENV, print_environment},
+		{BUILTIN_SETENV, builtin_setenv},
+		{BUILTIN_UNSETENV, builtin_unsetenv},
 		{NULL, NULL}};
 
 	while (actions[i].cmd)
@@ -41,28 +60,4 @@ int is_builtin(shell_info *data)
 	}
 
 	return (NOT_BUILTIN);
-}
-
-/**
- * check_exec - Checks if a file exits and it's an executable
- * @args: Path to the file
- * Return: 1 if all conditions are satisfied.
- */
-int check_exec(char *args)
-{
-	struct stat fileStatus;
-
-	/* If path exists */
-	if (stat(args, &fileStatus) == 0)
-	{
-		/* If path is a directory or is not an executable */
-		if (access(args, X_OK) || S_ISDIR(fileStatus.st_mode))
-		{
-			errno = 126;
-			return (COMMAND_ERROR);
-		}
-		return (1);
-	}
-	errno = 127;
-	return (COMMAND_ERROR);
 }
