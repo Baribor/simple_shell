@@ -50,6 +50,7 @@ int is_builtin(shell_info *data)
 		{BUILTIN_ENV, print_environment},
 		{BUILTIN_SETENV, builtin_setenv},
 		{BUILTIN_UNSETENV, builtin_unsetenv},
+		{BUILTIN_ALIAS, builtin_alias},
 		{NULL, NULL}};
 
 	while (actions[i].cmd)

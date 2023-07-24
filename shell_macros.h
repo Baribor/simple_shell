@@ -17,6 +17,7 @@
 #define BUILTIN_EXIT "exit"
 #define BUILTIN_SETENV "setenv"
 #define BUILTIN_UNSETENV "unsetenv"
+#define BUILTIN_ALIAS "alias"
 
 /* Logical operators */
 #define LOGICAL_OR 1

@@ -61,6 +61,21 @@ typedef struct bf
 	int (*action)(shell_info *data);
 } builtin_action;
 
+/**
+ * struct al - alias data
+ * @name: name of alias
+ * @value: value to replace it with
+ * @next: pointer to next node
+ */
+typedef struct al
+{
+	char *name;
+	char *value;
+	struct al *next;
+} alias_list;
+
+extern alias_list *al;
+
 /*string functions*/
 char *_strcat(char *dest, const char *src);
 char *_strcpy(char *dest, const char *src);
@@ -76,6 +91,7 @@ char *_strdup_range(char *src, int from, int to);
 void free_array_of_pointers(char **arr);
 void free_program_data(shell_info *data);
 void free_all_data(shell_info *data);
+void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
 ssize_t read_line(shell_info *data);
@@ -101,6 +117,11 @@ int builtin_exit(shell_info *data);
 int builtin_setenv(shell_info *data);
 int builtin_unsetenv(shell_info *data);
 int builtin_cd(shell_info *data);
+int builtin_alias(shell_info *data);
+
+/* additonal alias functions */
+void add_alias(char *name, char *value);
+void print_alias(alias_list *var, char **names);
 
 /* Output */
 void print_error(shell_info *data);

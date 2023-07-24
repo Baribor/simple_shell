@@ -51,3 +51,21 @@ void free_all_data(shell_info *data)
 	free_program_data(data);
 	free_array_of_pointers(environ);
 }
+/**
+ * free_aliases - frees memory from alias
+ * @var: pointer to head node
+ */
+void free_aliases(alias_list *var)
+{
+	alias_list *alias = var;
+	alias_list *temp;
+
+	while (alias != NULL)
+	{
+		temp = alias;
+		alias = alias->next;
+		free(temp->name);
+		free(temp->value);
+		free(temp);
+	}
+}
