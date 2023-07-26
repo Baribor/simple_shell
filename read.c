@@ -2,39 +2,36 @@
 /**
  * read_line - reads input from standard input
  * @data: Program data
- * @fd: file descriptor
  * Return: returns the line read
  */
-ssize_t read_line(shell_info *data, int fd)
+ssize_t read_line(shell_info *data)
 {
 	char line[BUF_SIZE] = {'\0'};
 	ssize_t bytes_read;
 	static char *commands[MAX_TOKENS] = {NULL};
 	int i = 0;
 
-	if (fd != STDIN_FILENO)
-		bytes_read = read(fd, line, BUF_SIZE);
-	else
+	if (commands[0] == NULL)
 	{
-		if (commands[0] == NULL)
-			bytes_read = read(STDIN_FILENO, line, BUF_SIZE);
+		bytes_read = read(data->fd, line, BUF_SIZE);
+
+		/* Check for EOF */
+		if (bytes_read == 0)
+		{
+			free_all_data(data);
+			exit(errno);
+		}
+
+		/* Split input into lines of command if needed */
+		commands[i] = _strdup(_strtok(line, "\n"));
+		while (commands[i])
+			commands[++i] = _strdup(_strtok(NULL, "\n"));
 	}
 
-	/* Check for EOF */
-	if (bytes_read == 0)
-	{
-		free_program_data(data);
-		exit(errno);
-	}
-
-	/* Split input into lines of command if needed */
-	commands[i] = _strdup(_strtok(line, "\n"));
-	while (commands[i])
-		commands[++i] = _strdup(_strtok(NULL, "\n"));
-
-	data->cmdline = commands[0];
 	if (commands[0])
 		data->cmdline = expand_variables(_strtrim(commands[0]), data);
+	else
+		data->cmdline = commands[0];
 
 	/**
 	 * Shift the commands array so the first index

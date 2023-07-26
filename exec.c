@@ -42,10 +42,10 @@ char *handle_path(char *args)
 
 /**
  * execute - Main external commnand handler
- * @args: Arguments passed
+ * @data: Program data
  * Return: Void
  */
-void execute(char **args)
+void execute(shell_info *data)
 {
 	pid_t pid;
 	int status;
@@ -53,13 +53,13 @@ void execute(char **args)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork error");
+		perror(data->name);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
-		if (execve(args[0], args, environ) == -1)
-			perror("execve error");
+		if (execve(data->args[0], data->args, environ) == -1)
+			perror(data->name);
 		exit(errno);
 	}
 
@@ -98,7 +98,7 @@ int exec_command(shell_info *data)
 	/* If the path is a valid path */
 	if (fileStat == 1)
 	{
-		execute(data->args);
+		execute(data);
 		return (EXIT_SUCCESS);
 	}
 	return (fileStat);

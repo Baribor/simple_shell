@@ -5,11 +5,13 @@
 #define MAX_TOKEN_SIZE 32
 #define MAX_DIR_LENGTH 4096
 #define BUF_SIZE 1024
-#define DELIM " \t\r\n\a"
+#define DELIM " \n"
 
-#define PROMPT "($) "
+#define PROMPT "$ "
 #define NOT_BUILTIN -99 /* If a command is not a builtin command */
 #define COMMAND_ERROR -1
+
+#define INTERACTIVE_MODE 99
 
 /* Builtins */
 #define BUILTIN_CD "cd"

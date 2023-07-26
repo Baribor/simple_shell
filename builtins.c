@@ -17,6 +17,7 @@ int print_environment(shell_info *data)
 		write(STDOUT_FILENO, "\n", 1);
 		i++;
 	}
+	errno = 0;
 	return (EXIT_SUCCESS);
 }
 
@@ -76,18 +77,15 @@ int builtin_unsetenv(shell_info *data)
 int builtin_cd(shell_info *data)
 {
 	char *dir = data->args[1];
-	char *pwd;
+	char pwd[1024], *home;
 	int status, is_prev = 0;
 
-	pwd = getcwd(NULL, 0);
+	getcwd(pwd, 1024);
+	home = _getenv("HOME");
 
 	/* Check if no argument */
 	if (dir == NULL)
-	{
-		dir = _getenv("HOME");
-		if (!dir)
-			dir = _getenv("PWD");
-	}
+		dir = home ? home : pwd;
 
 	/* Check if the argument is - */
 	if (_strcmp(dir, "-") == 0)
@@ -96,19 +94,17 @@ int builtin_cd(shell_info *data)
 		/* cd to the OLDPWD if it exist else PWD */
 		dir = _getenv("OLDPWD");
 		if (!dir)
-			dir = _getenv("PWD");
+			dir = pwd;
 	}
 
 	status = chdir(dir);
 	if (status == EXIT_SUCCESS)
 	{
 		_setenv("OLDPWD", pwd);
-		free(pwd);
-		pwd = getcwd(NULL, 0);
+		getcwd(pwd, 1024);
 		_setenv("PWD", pwd);
 		if (is_prev)
 			write(STDOUT_FILENO, pwd, _strlen(pwd)), write(STDOUT_FILENO, "\n", 1);
-		free(pwd);
 	}
 
 	return (status);

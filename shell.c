@@ -9,32 +9,33 @@
 int main(__attribute((unused)) int argc, __attribute((unused)) char *argv[])
 {
 	shell_info data = {NULL};
-	int file_fd = STDIN_FILENO;
 
 	signal(SIGINT, handle_sigint);
 
-	init_data(&data);
-	data.name = argv[0];
+	data.fd = STDIN_FILENO;
+
+	if (isatty(STDIN_FILENO) && argc == 1)
+		data.mode = INTERACTIVE_MODE;
 
 	/*checks if arguments were given */
 	if (argv[1] && argc > 1)
 	{
-		file_fd = open(argv[1], O_RDONLY);
-		if (file_fd == -1)
+		data.fd = open(argv[1], O_RDONLY);
+		if (data.fd == -1)
 		{
-			perror("Error opening file");
-			exit(EXIT_FAILURE);
+			errno = 127;
+			_print_err(argv[0]);
+			_print_err(": 0: Can't open ");
+			_print_err(argv[1]);
+			_print_err("\n");
+			exit(errno);
 		}
 	}
 
-	/* Check if the shell is in interractive mode */
-	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && argc == 1)
-		prompt = PROMPT;
+	init_data(&data);
+	data.name = argv[0];
 
-	shell_loop(prompt, &data, file_fd);
-
-	if (file_fd != STDIN_FILENO)
-		close(file_fd);
+	shell_loop(&data);
 
 	return (0);
 }

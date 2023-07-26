@@ -64,11 +64,17 @@ void free_program_data(shell_info *data)
  */
 void free_all_data(shell_info *data)
 {
+	if (data->cmdlist && data->mode == INTERACTIVE_MODE)
+		free_array_of_pointers(data->cmdlist);
+
+	if (data->fd != STDIN_FILENO)
+	{
+		if (close(data->fd))
+			perror(data->name);
+	}
+
 	if (data->logic_data->operands)
 		free_array_of_pointers(data->logic_data->operands);
-
-	if (data->cmdlist)
-		free_array_of_pointers(data->cmdlist);
 
 	free_program_data(data);
 	free_array_of_pointers(environ);

@@ -53,6 +53,8 @@ typedef struct od
  * @logic_data: Data related to the logical operation of a single command.
  * @al: Alias list
  * @cmdlinebuf: Buffer to store the expanded cmd line
+ * @fd: File descriptor
+ * @mode: Shell mode
  */
 typedef struct pd
 {
@@ -65,6 +67,8 @@ typedef struct pd
 	char cmdlinebuf[MAX_DIR_LENGTH];
 	ops_data *logic_data;
 	alias_list *al;
+	int fd;
+	int mode;
 
 } shell_info;
 
@@ -84,7 +88,6 @@ char *_strcat(char *dest, const char *src);
 char *_strcpy(char *dest, const char *src);
 size_t _strlen(const char *str);
 int _strncmp(const char *s1, const char *s2, size_t n);
-size_t _strcspn(char *str, char *charset);
 char *_strdup(const char *str);
 int _strcmp(char *s1, char *s2);
 char *_strtok(char *s, char *delim);
@@ -99,13 +102,12 @@ void free_all_data(shell_info *data);
 void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
-ssize_t read_line(shell_info *data, int fd);
-void show_prompt(void);
+ssize_t read_line(shell_info *data);
+void show_prompt(shell_info *data);
 void tokenize_input(shell_info *data);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
-void shell_loop(char *prompt, shell_info *data, int fd);
 void shell_loop(shell_info *data);
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);

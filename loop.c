@@ -2,12 +2,13 @@
 
 /**
  * show_prompt - Shows the prompt
+ * @data: Program data
  * Return: void
  */
-void show_prompt(void)
+void show_prompt(shell_info *data)
 {
-	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "$ ", _strlen("$ "));
+	if (data->mode == INTERACTIVE_MODE)
+		write(STDOUT_FILENO, PROMPT, _strlen(PROMPT));
 }
 
 /**
@@ -19,7 +20,7 @@ void run_command(shell_info *data)
 {
 	int builtin, error_no;
 	int i;
-	ops_data logic_data = {NULL};
+	ops_data logic_data;
 
 	expand_logical_ops(data->cmd, &logic_data);
 
@@ -56,12 +57,9 @@ void run_command(shell_info *data)
 
 /**
  * shell_loop - Main shell
- * @prompt: The prompt to show, Enter string for
- * non-interractive mode
- * @fd: file descriptor
  * @data: Data of the shell
  */
-void shell_loop(char *prompt, shell_info *data, int fd)
+void shell_loop(shell_info *data)
 {
 	ssize_t cmd_length, i;
 
@@ -69,18 +67,11 @@ void shell_loop(char *prompt, shell_info *data, int fd)
 
 	while (++(data->execution_count))
 	{
-		show_prompt();
+		show_prompt(data);
 		cmd_length = read_line(data);
 
 		if (cmd_length == 0)
-		{
-			if (fd != STDIN_FILENO)
-			{
-				close(fd);
-				break;
-			}
 			continue;
-		}
 
 		build_command_list(data);
 

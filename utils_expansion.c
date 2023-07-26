@@ -12,7 +12,7 @@ ops_data *expand_logical_ops(char *cmd, ops_data *data)
 	int len = _strlen(cmd_copy);
 	int start = 0, idx = 0, oIdx = 0;
 
-	data->operands = malloc(MAX_TOKENS * sizeof(char *));
+	data->operands = calloc(MAX_TOKENS, sizeof(char *));
 	if (!data->operands)
 	{
 		perror("Allocation error");
@@ -49,7 +49,7 @@ char *expand_variables(char *line, shell_info *data)
 	char num[10] = {'\0'};
 	char *env;
 	char var_buf[MAX_TOKENS] = {'\0'};
-	int cIdx = 0, nIdx = 0, i, j;
+	int cIdx = 0, nIdx = 0, i, j, env_found;
 
 	if (!line)
 		return (NULL);
@@ -65,18 +65,19 @@ char *expand_variables(char *line, shell_info *data)
 				line += 2, nIdx += 2;
 				continue;
 			}
-			for (i = 1; *(line + i) && *(line + i) != ' '; i++)
+			env_found = 0;
+			for (i = 1; *(line + i) && *(line + i) != ' ' && *(line + i) != '$'; i++)
 			{
-				var_buf[i - 1] = *(line + i), var_buf[i] = '\0';
-				env = _getenv(var_buf);
+				var_buf[i - 1] = *(line + i), var_buf[i] = '\0', env = _getenv(var_buf);
 				if (env)
 				{
+					env_found = 1;
 					for (j = 0; env[j]; j++, cIdx++)
 						data->cmdlinebuf[cIdx] = env[j];
 					break;
 				}
 			}
-			line += i + 1, nIdx += i + 1;
+			line += env_found ? i + 1 : i, nIdx += env_found ? i + 1 : i;
 			continue;
 		}
 		data->cmdlinebuf[cIdx++] = *line;
