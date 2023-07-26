@@ -25,7 +25,7 @@ void run_command(shell_info *data)
 		}
 
 		data->logic_data = &logic_data;
-		data->cmd = logic_data.operands[i];
+		data->cmd = _strtrim(_strdup(logic_data.operands[i]));
 		tokenize_input(data);
 
 		builtin = error_no = is_builtin(data);
@@ -54,6 +54,8 @@ void shell_loop(char *prompt, shell_info *data)
 {
 	ssize_t cmd_length, i;
 
+	errno = 0; /* Set the initial errno */
+
 	while (++(data->execution_count))
 	{
 		write(STDOUT_FILENO, prompt, _strlen(prompt));
@@ -70,7 +72,7 @@ void shell_loop(char *prompt, shell_info *data)
 			if (check_comment(data))
 			{
 				if (!data->cmd[0])
-					free_program_data(data);
+					errno = 0, free_program_data(data);
 				else
 					run_command(data);
 				break;

@@ -37,3 +37,94 @@ ops_data *expand_logical_ops(char *cmd, ops_data *data)
 	free(cmd_copy - len);
 	return (data);
 }
+
+/**
+ * expand_variables - Expands the variables in a command line
+ * @line: The command line
+ * @data: The Program data
+ * Return: The expanded line
+ */
+char *expand_variables(char *line, shell_info *data)
+{
+	char num[10] = {'\0'};
+	char *env;
+	char var_buf[MAX_TOKENS] = {'\0'};
+	int cIdx = 0, nIdx = 0, i, j;
+
+	if (!line)
+		return (NULL);
+	while (*line)
+	{
+		if (*line == '$' && !(*(line + 1) == ' ' || *(line + 1) == '\0'))
+		{
+			if (((*(line + 1) == '$') || *(line + 1) == '?'))
+			{
+				number_to_string(num, *(line + 1) == '$' ? getpid() : errno);
+				for (i = 0; num[i]; i++, cIdx++)
+					data->cmdlinebuf[cIdx] = num[i];
+				line += 2, nIdx += 2;
+				continue;
+			}
+			for (i = 1; *(line + i) && *(line + i) != ' '; i++)
+			{
+				var_buf[i - 1] = *(line + i), var_buf[i] = '\0';
+				env = _getenv(var_buf);
+				if (env)
+				{
+					for (j = 0; env[j]; j++, cIdx++)
+						data->cmdlinebuf[cIdx] = env[j];
+					break;
+				}
+			}
+			line += i + 1, nIdx += i + 1;
+			continue;
+		}
+		data->cmdlinebuf[cIdx++] = *line;
+		nIdx++, line++;
+	}
+	data->cmdlinebuf[cIdx] = '\0';
+	free(line - nIdx);
+	return (_strdup(data->cmdlinebuf));
+}
+
+/**
+ * expand_alias - Expands and alias in a command line
+ * @line: Command line
+ * @data: Program data
+ * Return: The expanded line
+ */
+char *expand_alias(char *line, shell_info *data)
+{
+	char var_buf[MAX_DIR_LENGTH] = {'\0'};
+	/* int cIdx = 0, nIdx = 0, i = 0, j; */
+	int i = 0;
+	alias_list *alias;
+
+	if (!line)
+		return (NULL);
+
+	while (*line)
+	{
+		if (*line == ' ')
+		{
+			var_buf[i] = '\0';
+			alias = get_alias(data, var_buf);
+
+			if (alias)
+			{
+				_strcpy(data->cmdlinebuf, alias->value);
+			}
+			else
+			{
+				var_buf[i] = ' ', var_buf[i + 1] = '\0';
+				_strcpy(data->cmdlinebuf, var_buf);
+			}
+		}
+		else
+		{
+			var_buf[i++] = *line;
+		}
+	}
+
+	return (data->cmdlinebuf);
+}

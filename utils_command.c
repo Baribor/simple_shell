@@ -64,12 +64,15 @@ int check_comment(shell_info *data)
 		{
 			if (i == 0)
 			{
-				data->cmd = "";
+				data->cmd = _strdup("");
 				return (1);
 			}
 
-			data->cmd = _strtok(data->cmd, "#");
-			return (1);
+			if (data->cmd[i - 1] == ' ')
+			{
+				data->cmd = _strtok(data->cmd, "#");
+				return (1);
+			}
 		}
 	}
 	return (0);

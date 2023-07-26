@@ -1,6 +1,25 @@
 #include "shell.h"
 
 /**
+ * free_aliases - frees memory from alias
+ * @var: pointer to head node
+ */
+void free_aliases(alias_list *var)
+{
+	alias_list *alias = var;
+	alias_list *temp;
+
+	while (alias != NULL)
+	{
+		temp = alias;
+		alias = alias->next;
+		free(temp->name);
+		free(temp->value);
+		free(temp);
+	}
+}
+
+/**
  * free_array_of_pointers - Frees a double pointer
  * @arr: The memory area to free
  * Return: void
@@ -31,8 +50,11 @@ void free_program_data(shell_info *data)
 		free_array_of_pointers(data->args);
 	if (data->cmdline)
 		free(data->cmdline);
+	if (data->cmd)
+		free(data->cmd);
 	data->args = NULL;
 	data->cmdline = NULL;
+	data->cmd = NULL;
 }
 
 /**
@@ -50,22 +72,5 @@ void free_all_data(shell_info *data)
 
 	free_program_data(data);
 	free_array_of_pointers(environ);
-}
-/**
- * free_aliases - frees memory from alias
- * @var: pointer to head node
- */
-void free_aliases(alias_list *var)
-{
-	alias_list *alias = var;
-	alias_list *temp;
-
-	while (alias != NULL)
-	{
-		temp = alias;
-		alias = alias->next;
-		free(temp->name);
-		free(temp->value);
-		free(temp);
-	}
+	free_aliases(data->al);
 }

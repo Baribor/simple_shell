@@ -29,6 +29,8 @@ ssize_t read_line(shell_info *data)
 	}
 
 	data->cmdline = commands[0];
+	if (commands[0])
+		data->cmdline = expand_variables(_strtrim(commands[0]), data);
 
 	/**
 	 * Shift the commands array so the first index

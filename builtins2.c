@@ -1,13 +1,34 @@
 #include "shell.h"
 
 /**
+ * get_alias - Gets an alias
+ * @data: Program data
+ * @name: Name of alias to retrieve
+ * Return: The alias else NULL
+ */
+alias_list *get_alias(shell_info *data, char *name)
+{
+	alias_list *alias = data->al;
+
+	while (alias != NULL)
+	{
+		if (_strcmp(alias->name, name))
+			return (alias);
+		alias = alias->next;
+	}
+
+	return (NULL);
+}
+
+/**
  * add_alias - creates or modifies alias
  * @name: name of the alias
  * @value: value of the alias
+ * @data: Program data
  */
-void add_alias(char *name, char *value)
+void add_alias(char *name, char *value, shell_info *data)
 {
-	alias_list *alias = al;
+	alias_list *alias = data->al;
 	alias_list *new;
 
 	/* check if the alias already exists */
@@ -25,23 +46,22 @@ void add_alias(char *name, char *value)
 	new = malloc(sizeof(alias_list));
 	new->name = _strdup(name);
 	new->value = _strdup(value);
-	new->next = al;
-	al = new;
+	new->next = data->al;
+	data->al = new;
 }
 
 /**
  * print_alias - prints all or specified aliases
- * @var: pointer to head node
- * @names: array of strings of alias name
+ * @data: Program data
+ * @name: alias name
  */
-void print_alias(alias_list *var, char **names)
+void print_alias(shell_info *data, char *name)
 {
-	alias_list *alias = var;
-	int i;
+	alias_list *alias = data->al;
 
 	while (alias != NULL)
 	{
-		if (names == NULL) /*print all aliases */
+		if (name == NULL) /*print all aliases */
 		{
 			write(STDOUT_FILENO, alias->name, _strlen(alias->name));
 			write(STDOUT_FILENO, "='", 2);
@@ -50,19 +70,24 @@ void print_alias(alias_list *var, char **names)
 		}
 		else
 		{
-			for (i = 0; names[i]; i++)
+			if (_strcmp(alias->name, name) == 0)
 			{
-				if (_strcmp(alias->name, names[i]) == 0)
-				{
-					write(STDOUT_FILENO, alias->name, _strlen(alias->name));
-					write(STDOUT_FILENO, "='", 2);
-					write(STDOUT_FILENO, alias->value, _strlen(alias->value));
-					write(STDOUT_FILENO, "'\n", 2);
-					break;
-				}
+				write(STDOUT_FILENO, alias->name, _strlen(alias->name));
+				write(STDOUT_FILENO, "='", 2);
+				write(STDOUT_FILENO, alias->value, _strlen(alias->value));
+				write(STDOUT_FILENO, "'\n", 2);
+				return;
 			}
 		}
 		alias = alias->next;
+	}
+
+	if (name)
+	{
+		_print_err("alias: ");
+		_print_err(name);
+		_print_err(" not found\n");
+		errno = 1;
 	}
 }
 /**
@@ -77,21 +102,23 @@ int builtin_alias(shell_info *data)
 	int i = 0;
 
 	if (args[1] == NULL)
-		print_alias(al, NULL);
-	else if (args[2] == NULL)
-		print_alias(al, &args[1]);
+		print_alias(data, NULL);
 	else
 	{
 		i = 1;
 		while (args[i] != NULL)
 		{
 			name = args[i];
-			value = strchr(args[i], '=');
+			value = strchr(*name == '=' ? name + 1 : args[i], '=');
 			if (value != NULL)
 			{
 				*value = '\0';
 				value++;
-				add_alias(name, value);
+				add_alias(name, value, data);
+			}
+			else
+			{
+				print_alias(data, name);
 			}
 			i++;
 		}

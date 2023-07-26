@@ -11,6 +11,12 @@ void number_to_string(char *buf, int num)
 {
 	int i = 0;
 
+	if (num == 0)
+	{
+		buf[0] = '0', buf[1] = '\0';
+		return;
+	}
+
 	while (num)
 	{
 		buf[i++] = '0' + (num % 10);

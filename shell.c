@@ -1,6 +1,5 @@
 #include "shell.h"
 
-alias_list *al = NULL;
 /**
  * main - Entry point of the shell.
  * @argc: Number of arguments

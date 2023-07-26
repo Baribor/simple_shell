@@ -60,7 +60,7 @@ void execute(char **args)
 	{
 		if (execve(args[0], args, environ) == -1)
 			perror("execve error");
-		exit(EXIT_FAILURE);
+		exit(errno);
 	}
 
 	if (pid > 0)

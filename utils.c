@@ -31,7 +31,7 @@ void init_data(shell_info *data)
 	data->execution_count = 0;
 	data->args = NULL;
 	data->cmdlist = NULL;
-
+	data->al = NULL;
 	data->logic_data = &logic_data;
 }
 
