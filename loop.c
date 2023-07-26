@@ -63,11 +63,6 @@ void run_command(shell_info *data)
  * @data: Data of the shell
  */
 void shell_loop(char *prompt, shell_info *data, int fd)
-=======
- * @data: Data of the shell
- */
-void shell_loop(shell_info *data)
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 {
 	ssize_t cmd_length, i;
 
@@ -75,14 +70,8 @@ void shell_loop(shell_info *data)
 
 	while (++(data->execution_count))
 	{
-<<<<<<< HEAD
-		if (fd == STDIN_FILENO)
-			write(STDOUT_FILENO, prompt, _strlen(prompt));
-		cmd_length = read_line(data, fd);
-=======
 		show_prompt();
 		cmd_length = read_line(data);
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 
 		if (cmd_length == 0)
 		{

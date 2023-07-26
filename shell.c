@@ -15,7 +15,6 @@ int main(__attribute((unused)) int argc, __attribute((unused)) char *argv[])
 
 	init_data(&data);
 	data.name = argv[0];
-<<<<<<< HEAD
 
 	/*checks if arguments were given */
 	if (argv[1] && argc > 1)
@@ -36,9 +35,6 @@ int main(__attribute((unused)) int argc, __attribute((unused)) char *argv[])
 
 	if (file_fd != STDIN_FILENO)
 		close(file_fd);
-=======
 
-	shell_loop(&data);
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 	return (0);
 }
