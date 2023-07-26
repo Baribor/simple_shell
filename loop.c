@@ -1,6 +1,16 @@
 #include "shell.h"
 
 /**
+ * show_prompt - Shows the prompt
+ * Return: void
+ */
+void show_prompt(void)
+{
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "$ ", _strlen("$ "));
+}
+
+/**
  * run_command - Runs a single command
  * @data: Program data
  * Return: void
@@ -46,11 +56,9 @@ void run_command(shell_info *data)
 
 /**
  * shell_loop - Main shell loop
- * @prompt: The prompt to show, Enter string for
- * non-interractive mode
  * @data: Data of the shell
  */
-void shell_loop(char *prompt, shell_info *data)
+void shell_loop(shell_info *data)
 {
 	ssize_t cmd_length, i;
 
@@ -58,7 +66,7 @@ void shell_loop(char *prompt, shell_info *data)
 
 	while (++(data->execution_count))
 	{
-		write(STDOUT_FILENO, prompt, _strlen(prompt));
+		show_prompt();
 		cmd_length = read_line(data);
 
 		if (cmd_length == 0)

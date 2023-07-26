@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "shell_macros.h"
 
@@ -98,12 +99,13 @@ void free_all_data(shell_info *data);
 void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
+void show_prompt(void);
 ssize_t read_line(shell_info *data);
 void tokenize_input(shell_info *data);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
-void shell_loop(char *prompt, shell_info *data);
+void shell_loop(shell_info *data);
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
@@ -137,4 +139,8 @@ ssize_t _print_err(char *err);
 void number_to_string(char *buf, int num);
 void reverse_string(char *str);
 int _atoi(char *str);
+
+/* Signal handlers */
+void handle_sigint(int signal);
+
 #endif
