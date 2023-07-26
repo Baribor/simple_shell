@@ -48,19 +48,28 @@ void run_command(shell_info *data)
  * shell_loop - Main shell loop
  * @prompt: The prompt to show, Enter string for
  * non-interractive mode
+ * @fd: file descriptor
  * @data: Data of the shell
  */
-void shell_loop(char *prompt, shell_info *data)
+void shell_loop(char *prompt, shell_info *data, int fd)
 {
 	ssize_t cmd_length, i;
 
 	while (++(data->execution_count))
 	{
-		write(STDOUT_FILENO, prompt, _strlen(prompt));
-		cmd_length = read_line(data);
+		if (fd == STDIN_FILENO)
+			write(STDOUT_FILENO, prompt, _strlen(prompt));
+		cmd_length = read_line(data, fd);
 
 		if (cmd_length == 0)
+		{
+			if (fd != STDIN_FILENO)
+			{
+				close(fd);
+				break;
+			}
 			continue;
+		}
 
 		build_command_list(data);
 

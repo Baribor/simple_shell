@@ -2,31 +2,35 @@
 /**
  * read_line - reads input from standard input
  * @data: Program data
+ * @fd: file descriptor
  * Return: returns the line read
  */
-ssize_t read_line(shell_info *data)
+ssize_t read_line(shell_info *data, int fd)
 {
 	char line[BUF_SIZE] = {'\0'};
 	ssize_t bytes_read;
 	static char *commands[MAX_TOKENS] = {NULL};
 	int i = 0;
 
-	if (commands[0] == NULL)
+	if (fd != STDIN_FILENO)
+		bytes_read = read(fd, line, BUF_SIZE);
+	else
 	{
-		bytes_read = read(STDIN_FILENO, line, BUF_SIZE);
-
-		/* Check for EOF */
-		if (bytes_read == 0)
-		{
-			free_program_data(data);
-			exit(errno);
-		}
-
-		/* Split input into lines of command if needed */
-		commands[i] = _strdup(_strtok(line, "\n"));
-		while (commands[i])
-			commands[++i] = _strdup(_strtok(NULL, "\n"));
+		if (commands[0] == NULL)
+			bytes_read = read(STDIN_FILENO, line, BUF_SIZE);
 	}
+
+	/* Check for EOF */
+	if (bytes_read == 0)
+	{
+		free_program_data(data);
+		exit(errno);
+	}
+
+	/* Split input into lines of command if needed */
+	commands[i] = _strdup(_strtok(line, "\n"));
+	while (commands[i])
+		commands[++i] = _strdup(_strtok(NULL, "\n"));
 
 	data->cmdline = commands[0];
 

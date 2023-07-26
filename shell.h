@@ -94,12 +94,12 @@ void free_all_data(shell_info *data);
 void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
-ssize_t read_line(shell_info *data);
+ssize_t read_line(shell_info *data, int fd);
 void tokenize_input(shell_info *data);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
-void shell_loop(char *prompt, shell_info *data);
+void shell_loop(char *prompt, shell_info *data, int fd);
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
@@ -121,7 +121,7 @@ int builtin_alias(shell_info *data);
 
 /* additonal alias functions */
 void add_alias(char *name, char *value);
-void print_alias(alias_list *var, char **names);
+void print_alias(alias_list *al, char **names);
 
 /* Output */
 void print_error(shell_info *data);

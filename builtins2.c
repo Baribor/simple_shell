@@ -34,9 +34,9 @@ void add_alias(char *name, char *value)
  * @var: pointer to head node
  * @names: array of strings of alias name
  */
-void print_alias(alias_list *var, char **names)
+void print_alias(alias_list *al, char **names)
 {
-	alias_list *alias = var;
+	alias_list *alias = al;
 	int i;
 
 	while (alias != NULL)
