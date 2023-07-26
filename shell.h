@@ -99,21 +99,14 @@ void free_all_data(shell_info *data);
 void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
-<<<<<<< HEAD
 ssize_t read_line(shell_info *data, int fd);
-=======
 void show_prompt(void);
-ssize_t read_line(shell_info *data);
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 void tokenize_input(shell_info *data);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
-<<<<<<< HEAD
 void shell_loop(char *prompt, shell_info *data, int fd);
-=======
 void shell_loop(shell_info *data);
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
@@ -135,14 +128,9 @@ int builtin_cd(shell_info *data);
 int builtin_alias(shell_info *data);
 
 /* additonal alias functions */
-<<<<<<< HEAD
-void add_alias(char *name, char *value);
-void print_alias(alias_list *al, char **names);
-=======
 void add_alias(char *name, char *value, shell_info *data);
 void print_alias(shell_info *data, char *names);
 alias_list *get_alias(shell_info *data, char *name);
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 
 /* Output */
 void print_error(shell_info *data);
