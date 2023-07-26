@@ -55,8 +55,7 @@ void run_command(shell_info *data)
 }
 
 /**
- * shell_loop - Main shell loop
-<<<<<<< HEAD
+ * shell_loop - Main shell
  * @prompt: The prompt to show, Enter string for
  * non-interractive mode
  * @fd: file descriptor
