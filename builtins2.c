@@ -55,16 +55,9 @@ void add_alias(char *name, char *value, shell_info *data)
  * @data: Program data
  * @name: alias name
  */
-<<<<<<< HEAD
-void print_alias(alias_list *al, char **names)
-{
-	alias_list *alias = al;
-	int i;
-=======
 void print_alias(shell_info *data, char *name)
 {
 	alias_list *alias = data->al;
->>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 
 	while (alias != NULL)
 	{
