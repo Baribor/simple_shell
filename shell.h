@@ -11,11 +11,25 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "shell_macros.h"
 
 extern char **environ;
 extern int errno;
+
+/**
+ * struct al - alias data
+ * @name: name of alias
+ * @value: value to replace it with
+ * @next: pointer to next node
+ */
+typedef struct al
+{
+	char *name;
+	char *value;
+	struct al *next;
+} alias_list;
 
 /**
  * struct od - Operation Data
@@ -37,6 +51,8 @@ typedef struct od
  * @cmdline: The command read from stdin
  * @cmdlist: The commands available in a command line
  * @logic_data: Data related to the logical operation of a single command.
+ * @al: Alias list
+ * @cmdlinebuf: Buffer to store the expanded cmd line
  */
 typedef struct pd
 {
@@ -46,7 +62,9 @@ typedef struct pd
 	char **args;
 	char *cmdline;
 	char **cmdlist;
+	char cmdlinebuf[MAX_DIR_LENGTH];
 	ops_data *logic_data;
+	alias_list *al;
 
 } shell_info;
 
@@ -61,21 +79,6 @@ typedef struct bf
 	int (*action)(shell_info *data);
 } builtin_action;
 
-/**
- * struct al - alias data
- * @name: name of alias
- * @value: value to replace it with
- * @next: pointer to next node
- */
-typedef struct al
-{
-	char *name;
-	char *value;
-	struct al *next;
-} alias_list;
-
-extern alias_list *al;
-
 /*string functions*/
 char *_strcat(char *dest, const char *src);
 char *_strcpy(char *dest, const char *src);
@@ -86,6 +89,8 @@ char *_strdup(const char *str);
 int _strcmp(char *s1, char *s2);
 char *_strtok(char *s, char *delim);
 char *_strdup_range(char *src, int from, int to);
+char *_strtrim(char *str);
+int _isdigit(char *s);
 
 /* other relevant functions */
 void free_array_of_pointers(char **arr);
@@ -94,17 +99,27 @@ void free_all_data(shell_info *data);
 void free_aliases(alias_list *var);
 
 /* command line interpreter functions */
+<<<<<<< HEAD
 ssize_t read_line(shell_info *data, int fd);
+=======
+void show_prompt(void);
+ssize_t read_line(shell_info *data);
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 void tokenize_input(shell_info *data);
 char *handle_path(char *args);
 int check_exec(char *args);
 int exec_command(shell_info *data);
+<<<<<<< HEAD
 void shell_loop(char *prompt, shell_info *data, int fd);
+=======
+void shell_loop(shell_info *data);
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 int is_builtin(shell_info *data);
 void init_data(shell_info *data);
 void build_command_list(shell_info *data);
 int check_comment(shell_info *data);
 ops_data *expand_logical_ops(char *cmd, ops_data *data);
+char *expand_variables(char *line, shell_info *data);
 
 /* environment funtions */
 char *_getenv(const char *name);
@@ -120,14 +135,25 @@ int builtin_cd(shell_info *data);
 int builtin_alias(shell_info *data);
 
 /* additonal alias functions */
+<<<<<<< HEAD
 void add_alias(char *name, char *value);
 void print_alias(alias_list *al, char **names);
+=======
+void add_alias(char *name, char *value, shell_info *data);
+void print_alias(shell_info *data, char *names);
+alias_list *get_alias(shell_info *data, char *name);
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 
 /* Output */
 void print_error(shell_info *data);
+ssize_t _print_err(char *err);
 
 /* Converters */
 void number_to_string(char *buf, int num);
 void reverse_string(char *str);
 int _atoi(char *str);
+
+/* Signal handlers */
+void handle_sigint(int signal);
+
 #endif

@@ -27,10 +27,20 @@ int print_environment(shell_info *data)
  */
 int builtin_exit(shell_info *data)
 {
-	int status = EXIT_SUCCESS; /*this is the default exit status */
+	int status = errno; /*this is the default exit status */
 
 	if (data->args[1] != NULL)
+	{
 		status = _atoi(data->args[1]);
+		if (!_isdigit(data->args[1]) || status < 0)
+		{
+			errno = 2;
+			if (isatty(STDIN_FILENO))
+				return (-1);
+			print_error(data);
+			status = 2;
+		}
+	}
 
 	free_all_data(data);
 	exit(status);
@@ -66,18 +76,40 @@ int builtin_unsetenv(shell_info *data)
 int builtin_cd(shell_info *data)
 {
 	char *dir = data->args[1];
-	char pwd[MAX_DIR_LENGTH] = {'\0'};
-	int status;
+	char *pwd;
+	int status, is_prev = 0;
 
-	/* Check if no argument or - was passed */
-	if (dir == NULL || _strcmp(dir, "-") == 0)
+	pwd = getcwd(NULL, 0);
+
+	/* Check if no argument */
+	if (dir == NULL)
+	{
 		dir = _getenv("HOME");
+		if (!dir)
+			dir = _getenv("PWD");
+	}
+
+	/* Check if the argument is - */
+	if (_strcmp(dir, "-") == 0)
+	{
+		is_prev = 1;
+		/* cd to the OLDPWD if it exist else PWD */
+		dir = _getenv("OLDPWD");
+		if (!dir)
+			dir = _getenv("PWD");
+	}
 
 	status = chdir(dir);
 	if (status == EXIT_SUCCESS)
 	{
-		getcwd(pwd, MAX_DIR_LENGTH);
+		_setenv("OLDPWD", pwd);
+		free(pwd);
+		pwd = getcwd(NULL, 0);
 		_setenv("PWD", pwd);
+		if (is_prev)
+			write(STDOUT_FILENO, pwd, _strlen(pwd)), write(STDOUT_FILENO, "\n", 1);
+		free(pwd);
 	}
+
 	return (status);
 }

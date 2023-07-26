@@ -96,3 +96,40 @@ char *_strdup_range(char *src, int from, int to)
 	dup[i] = '\0';
 	return (dup);
 }
+
+/**
+ * _strtrim - Removes beginning trailing whitespace
+ * @str: The string to trim
+ * Return: The trimmed string
+ */
+char *_strtrim(char *str)
+{
+	char *dup = _strdup(str);
+	int i = 0;
+
+	while (*dup == ' ')
+		dup++, i++;
+	_strcpy(str, dup);
+
+	free(dup - i);
+	return (str);
+}
+
+/**
+ * _isdigit - Checks if a string contains onl digits
+ * @s: String to check
+ * Return: 1 if true else 0
+ */
+int _isdigit(char *s)
+{
+
+	int i = 0;
+
+	while (s[i])
+	{
+		if (s[i] < '0' || s[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}

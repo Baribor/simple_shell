@@ -35,13 +35,21 @@ void print_error_header(shell_info *data)
  */
 void print_error(shell_info *data)
 {
-	print_error_header(data);
+	if (_strcmp(data->args[0], BUILTIN_ALIAS))
+		print_error_header(data);
 	if (errno == 126 || errno == 127)
 		_print_err(errno == 127 ? "not found\n" : "Permission denied\n");
 
 	if (_strcmp(data->args[0], BUILTIN_CD) == 0)
 	{
 		_print_err("can't cd to ");
+		_print_err(data->args[1]);
+		_print_err("\n");
+	}
+
+	if (_strcmp(data->args[0], BUILTIN_EXIT) == 0)
+	{
+		_print_err("Illegal number: ");
 		_print_err(data->args[1]);
 		_print_err("\n");
 	}

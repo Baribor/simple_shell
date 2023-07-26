@@ -1,6 +1,16 @@
 #include "shell.h"
 
 /**
+ * show_prompt - Shows the prompt
+ * Return: void
+ */
+void show_prompt(void)
+{
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "$ ", _strlen("$ "));
+}
+
+/**
  * run_command - Runs a single command
  * @data: Program data
  * Return: void
@@ -25,7 +35,7 @@ void run_command(shell_info *data)
 		}
 
 		data->logic_data = &logic_data;
-		data->cmd = logic_data.operands[i];
+		data->cmd = _strtrim(_strdup(logic_data.operands[i]));
 		tokenize_input(data);
 
 		builtin = error_no = is_builtin(data);
@@ -46,20 +56,33 @@ void run_command(shell_info *data)
 
 /**
  * shell_loop - Main shell loop
+<<<<<<< HEAD
  * @prompt: The prompt to show, Enter string for
  * non-interractive mode
  * @fd: file descriptor
  * @data: Data of the shell
  */
 void shell_loop(char *prompt, shell_info *data, int fd)
+=======
+ * @data: Data of the shell
+ */
+void shell_loop(shell_info *data)
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 {
 	ssize_t cmd_length, i;
 
+	errno = 0; /* Set the initial errno */
+
 	while (++(data->execution_count))
 	{
+<<<<<<< HEAD
 		if (fd == STDIN_FILENO)
 			write(STDOUT_FILENO, prompt, _strlen(prompt));
 		cmd_length = read_line(data, fd);
+=======
+		show_prompt();
+		cmd_length = read_line(data);
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 
 		if (cmd_length == 0)
 		{
@@ -79,7 +102,7 @@ void shell_loop(char *prompt, shell_info *data, int fd)
 			if (check_comment(data))
 			{
 				if (!data->cmd[0])
-					free_program_data(data);
+					errno = 0, free_program_data(data);
 				else
 					run_command(data);
 				break;

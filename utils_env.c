@@ -30,18 +30,20 @@ char *_getenv(const char *name)
 int _setenv(char *var, char *val)
 {
 	char *env;
-	int i, len = _strlen(var);
+	int i, len;
 
 	if (!var || !val)
 	{
 		perror("Invalid argument for setenv\n");
-		return (-1);
+		return (0);
 	}
+
+	len = _strlen(var);
 	env = malloc(len + _strlen(val) + 2);
 	if (!env)
 	{
 		perror("Allocation error\n");
-		return (-1);
+		exit(EXIT_FAILURE);
 	}
 
 	_strcpy(env, var);
@@ -69,15 +71,21 @@ int _setenv(char *var, char *val)
  */
 int _unsetenv(char *var)
 {
-	char *env = _getenv(var);
-	int len = _strlen(var);
+	char *env;
+	int len;
 	int i, found = 0;
 
+	if (!var)
+		return (0);
+
+	env = _getenv(var);
 	if (!env)
 	{
 		perror("Variable not found\n");
-		return (-1);
+		return (0);
 	}
+
+	len = _strlen(var);
 
 	for (i = 0; environ[i]; i++)
 	{

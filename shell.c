@@ -1,20 +1,21 @@
 #include "shell.h"
 
-alias_list *al = NULL;
 /**
  * main - Entry point of the shell.
  * @argc: Number of arguments
  * @argv: Values of the arguments passed.
  * Return: 0 if success.
  */
-int main(int argc, char *argv[])
+int main(__attribute((unused)) int argc, __attribute((unused)) char *argv[])
 {
-	char *prompt = "";
 	shell_info data = {NULL};
 	int file_fd = STDIN_FILENO;
 
+	signal(SIGINT, handle_sigint);
+
 	init_data(&data);
 	data.name = argv[0];
+<<<<<<< HEAD
 
 	/*checks if arguments were given */
 	if (argv[1] && argc > 1)
@@ -35,5 +36,9 @@ int main(int argc, char *argv[])
 
 	if (file_fd != STDIN_FILENO)
 		close(file_fd);
+=======
+
+	shell_loop(&data);
+>>>>>>> 55388401bd140d0fd662f7274b7a46c0b1af5caa
 	return (0);
 }
