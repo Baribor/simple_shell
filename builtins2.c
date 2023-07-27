@@ -12,7 +12,7 @@ alias_list *get_alias(shell_info *data, char *name)
 
 	while (alias != NULL)
 	{
-		if (_strcmp(alias->name, name))
+		if (_strcmp(alias->name, name) == 0)
 			return (alias);
 		alias = alias->next;
 	}
@@ -28,7 +28,7 @@ alias_list *get_alias(shell_info *data, char *name)
  */
 void add_alias(char *name, char *value, shell_info *data)
 {
-	alias_list *alias = data->al;
+	alias_list *alias = data->al, *prev;
 	alias_list *new;
 
 	/* check if the alias already exists */
@@ -40,14 +40,19 @@ void add_alias(char *name, char *value, shell_info *data)
 			alias->value = _strdup(value);
 			return;
 		}
+		prev = alias;
 		alias = alias->next; /* moves to next node */
 	}
+
 	/* if alias doesnt exist, create a new one */
 	new = malloc(sizeof(alias_list));
 	new->name = _strdup(name);
 	new->value = _strdup(value);
-	new->next = data->al;
-	data->al = new;
+	new->next = NULL;
+	if (!data->al)
+		data->al = new;
+	else
+		prev->next = new;
 }
 
 /**

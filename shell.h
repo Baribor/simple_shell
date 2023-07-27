@@ -115,6 +115,7 @@ void build_command_list(shell_info *data);
 int check_comment(shell_info *data);
 ops_data *expand_logical_ops(char *cmd, ops_data *data);
 char *expand_variables(char *line, shell_info *data);
+char *expand_alias(char *str, int ret, shell_info *data);
 
 /* environment funtions */
 char *_getenv(const char *name);

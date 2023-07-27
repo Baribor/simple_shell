@@ -47,7 +47,7 @@ ops_data *expand_logical_ops(char *cmd, ops_data *data)
 char *expand_variables(char *line, shell_info *data)
 {
 	char num[10] = {'\0'};
-	char *env;
+	char *alias;
 	char var_buf[MAX_TOKENS] = {'\0'};
 	int cIdx = 0, nIdx = 0, i, j, env_found;
 
@@ -68,12 +68,12 @@ char *expand_variables(char *line, shell_info *data)
 			env_found = 0;
 			for (i = 1; *(line + i) && *(line + i) != ' ' && *(line + i) != '$'; i++)
 			{
-				var_buf[i - 1] = *(line + i), var_buf[i] = '\0', env = _getenv(var_buf);
-				if (env)
+				var_buf[i - 1] = *(line + i), var_buf[i] = '\0', alias = _getenv(var_buf);
+				if (alias)
 				{
 					env_found = 1;
-					for (j = 0; env[j]; j++, cIdx++)
-						data->cmdlinebuf[cIdx] = env[j];
+					for (j = 0; alias[j]; j++, cIdx++)
+						data->cmdlinebuf[cIdx] = alias[j];
 					break;
 				}
 			}
@@ -90,42 +90,51 @@ char *expand_variables(char *line, shell_info *data)
 
 /**
  * expand_alias - Expands and alias in a command line
- * @line: Command line
+ * @str: Command line
  * @data: Program data
+ * @ret: Flag to check if recursive or not
  * Return: The expanded line
  */
-char *expand_alias(char *line, shell_info *data)
+char *expand_alias(char *str, int ret, shell_info *data)
 {
-	char var_buf[MAX_DIR_LENGTH] = {'\0'};
-	/* int cIdx = 0, nIdx = 0, i = 0, j; */
-	int i = 0;
+	char line[4028] = {'\0'}, buf[64] = {'\0'};
 	alias_list *alias;
+	int i = 0, idx = 0, j = 0;
 
-	if (!line)
-		return (NULL);
-
-	while (*line)
+	while (*str)
 	{
-		if (*line == ' ')
+		if (*str == ' ')
 		{
-			var_buf[i] = '\0';
-			alias = get_alias(data, var_buf);
+			buf[i] = '\0';
+			alias = get_alias(data, buf);
 
 			if (alias)
 			{
-				_strcpy(data->cmdlinebuf, alias->value);
+				idx -= i;
+				line[idx] = '\0';
+				_strcat(line, ret ? expand_alias(alias->value, 0, data) : alias->value);
+				idx += _strlen(alias->value);
 			}
-			else
+			i = 0;
+			while (*str && *str == ' ')
 			{
-				var_buf[i] = ' ', var_buf[i + 1] = '\0';
-				_strcpy(data->cmdlinebuf, var_buf);
+				line[idx++] = *(str++);
+				j++;
 			}
+			line[idx] = '\0';
+			continue;
 		}
-		else
-		{
-			var_buf[i++] = *line;
-		}
-	}
 
-	return (data->cmdlinebuf);
+		buf[i] = *str, line[idx] = *str, str++, i++, idx++, j++;
+	}
+	buf[i] = '\0', alias = get_alias(data, buf);
+	if (alias)
+	{
+		idx -= i;
+		line[idx] = '\0';
+		_strcat(line, ret ? expand_alias(alias->value, 0, data) : alias->value);
+		idx += _strlen(alias->value);
+	}
+	free(str - j);
+	return (_strdup(line));
 }
